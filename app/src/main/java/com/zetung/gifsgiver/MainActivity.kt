@@ -49,10 +49,6 @@ class MainActivity : AppCompatActivity() {
 //            }
 //        }
 
-//        loadData {
-//            adapter.setData(it)
-//        }
-
 
         val retrofit = Retrofit.Builder().baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create()).build()
@@ -69,6 +65,10 @@ class MainActivity : AppCompatActivity() {
 
             }
         })
+
+//        loadData {
+//            adapter.setData(it)
+//        }
 
 //        val gifs = mutableListOf<Drawable>()
 //        gifs.add(ResourcesCompat.getDrawable(resources,R.drawable.gif1,null)!!)
