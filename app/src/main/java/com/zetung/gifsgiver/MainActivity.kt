@@ -4,31 +4,81 @@ import android.graphics.drawable.Drawable
 import android.media.Image
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.ImageView
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.zetung.gifsgiver.adapter.GifsAdapter
+import com.zetung.gifsgiver.model.GifApi
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import okhttp3.Dispatcher
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import com.zetung.gifsgiver.databinding.ActivityMainBinding
+import com.zetung.gifsgiver.model.AllGifs
+import com.zetung.gifsgiver.model.Gif
+import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
+
+    private val BASE_URL = "https://api.giphy.com/v1/"
+
+    private lateinit var binding: ActivityMainBinding
+
+    private lateinit var adapter: GifsAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val gifView = findViewById<RecyclerView>(R.id.gifView)
 
-        val gifs = mutableListOf<Drawable>()
-        gifs.add(ResourcesCompat.getDrawable(resources,R.drawable.gif1,null)!!)
-        gifs.add(ResourcesCompat.getDrawable(resources,R.drawable.gif2,null)!!)
-        gifs.add(ResourcesCompat.getDrawable(resources,R.drawable.gif3,null)!!)
-        gifs.add(ResourcesCompat.getDrawable(resources,R.drawable.gif1,null)!!)
-        gifs.add(ResourcesCompat.getDrawable(resources,R.drawable.gif2,null)!!)
-        gifs.add(ResourcesCompat.getDrawable(resources,R.drawable.gif3,null)!!)
+//        CoroutineScope(Dispatchers.IO).launch {
+//            val gifList = gifApi.getGifs()
+//            runOnUiThread {
+//                binding.apply {
+//                    adapter.setData(gifList.gifs)
+//                }
+//            }
+//        }
 
-        val adapter = GifsAdapter(this, gifs)
+        loadData {
+            adapter.setData(it)
+        }
 
-        gifView.adapter = adapter
-        gifView.layoutManager = LinearLayoutManager(this)
+//        val gifs = mutableListOf<Drawable>()
+//        gifs.add(ResourcesCompat.getDrawable(resources,R.drawable.gif1,null)!!)
+//        gifs.add(ResourcesCompat.getDrawable(resources,R.drawable.gif2,null)!!)
+//        gifs.add(ResourcesCompat.getDrawable(resources,R.drawable.gif3,null)!!)
+//        gifs.add(ResourcesCompat.getDrawable(resources,R.drawable.gif1,null)!!)
+//        gifs.add(ResourcesCompat.getDrawable(resources,R.drawable.gif2,null)!!)
+//        gifs.add(ResourcesCompat.getDrawable(resources,R.drawable.gif3,null)!!)
+
+        val gifs = mutableListOf<Gif>()
+
+        adapter = GifsAdapter(this,gifs)
+        binding.gifView.layoutManager = LinearLayoutManager(this)
+        binding.gifView.adapter = adapter
+
+
+    }
+
+
+    private fun loadData(callback: (List<Gif>) -> Unit){
+        thread {
+            val retrofit = Retrofit.Builder().baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create()).build()
+
+            val gifApi = retrofit.create(GifApi::class.java)
+            val gifList = gifApi.getGifs()
+            Handler(Looper.getMainLooper()).post{
+                callback.invoke(gifList.gifs)
+            }
+        }
 
     }
 }
