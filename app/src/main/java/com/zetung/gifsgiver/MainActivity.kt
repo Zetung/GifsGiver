@@ -21,6 +21,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import com.zetung.gifsgiver.databinding.ActivityMainBinding
 import com.zetung.gifsgiver.model.AllGifs
 import com.zetung.gifsgiver.model.Gif
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
@@ -46,9 +49,26 @@ class MainActivity : AppCompatActivity() {
 //            }
 //        }
 
-        loadData {
-            adapter.setData(it)
-        }
+//        loadData {
+//            adapter.setData(it)
+//        }
+
+
+        val retrofit = Retrofit.Builder().baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create()).build()
+
+        val gifApi = retrofit.create(GifApi::class.java)
+
+        gifApi.getGifs().enqueue(object : Callback<AllGifs?> {
+            override fun onResponse(call: Call<AllGifs?>, response: Response<AllGifs?>) {
+                val body = response.body()
+                body?.let { adapter.setData(it.gifs) }
+            }
+
+            override fun onFailure(call: Call<AllGifs?>, t: Throwable) {
+
+            }
+        })
 
 //        val gifs = mutableListOf<Drawable>()
 //        gifs.add(ResourcesCompat.getDrawable(resources,R.drawable.gif1,null)!!)
@@ -76,7 +96,7 @@ class MainActivity : AppCompatActivity() {
             val gifApi = retrofit.create(GifApi::class.java)
             val gifList = gifApi.getGifs()
             Handler(Looper.getMainLooper()).post{
-                callback.invoke(gifList.gifs)
+                //callback.invoke(gifList.gifs)
             }
         }
 
