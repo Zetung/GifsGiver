@@ -2,8 +2,6 @@ package com.zetung.gifsgiver.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.drawable.Drawable
-import android.media.Image
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,9 +9,6 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.zetung.gifsgiver.R
-import com.zetung.gifsgiver.model.Gif
-import com.zetung.gifsgiver.databinding.GifItemBinding
-import com.zetung.gifsgiver.model.AllGifs
 import com.zetung.gifsgiver.model.DataObject
 
 
