@@ -1,25 +1,17 @@
 package com.zetung.gifsgiver
 
-import android.graphics.drawable.Drawable
-import android.media.Image
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.widget.ImageView
-import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.zetung.gifsgiver.adapter.GifsAdapter
-import com.zetung.gifsgiver.model.GifApi
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import okhttp3.Dispatcher
+import com.zetung.gifsgiver.api.GifApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import com.zetung.gifsgiver.databinding.ActivityMainBinding
 import com.zetung.gifsgiver.model.AllGifs
+import com.zetung.gifsgiver.model.DataObject
 import com.zetung.gifsgiver.model.Gif
 import retrofit2.Call
 import retrofit2.Callback
@@ -78,7 +70,7 @@ class MainActivity : AppCompatActivity() {
 //        gifs.add(ResourcesCompat.getDrawable(resources,R.drawable.gif2,null)!!)
 //        gifs.add(ResourcesCompat.getDrawable(resources,R.drawable.gif3,null)!!)
 
-        val gifs = mutableListOf<Gif>()
+        val gifs = mutableListOf<DataObject>()
 
         adapter = GifsAdapter(this,gifs)
         binding.gifView.layoutManager = LinearLayoutManager(this)

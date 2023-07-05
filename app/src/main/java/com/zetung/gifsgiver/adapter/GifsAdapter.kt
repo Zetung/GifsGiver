@@ -13,9 +13,11 @@ import com.bumptech.glide.Glide
 import com.zetung.gifsgiver.R
 import com.zetung.gifsgiver.model.Gif
 import com.zetung.gifsgiver.databinding.GifItemBinding
+import com.zetung.gifsgiver.model.AllGifs
+import com.zetung.gifsgiver.model.DataObject
 
 
-class GifsAdapter(val context: Context,var gifs: List<Gif>) : RecyclerView.Adapter<GifsAdapter.ViewHolder>(){
+class GifsAdapter(val context: Context,var gifs: List<DataObject>) : RecyclerView.Adapter<GifsAdapter.ViewHolder>(){
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView = itemView.findViewById<ImageView>(R.id.ivGif)
     }
@@ -34,11 +36,11 @@ class GifsAdapter(val context: Context,var gifs: List<Gif>) : RecyclerView.Adapt
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = gifs[position]
 
-        Glide.with(context).load(data.url).into(holder.imageView)
+        Glide.with(context).load(data.images.gif.url).into(holder.imageView)
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setData(data: List<Gif>){
+    fun setData(data: List<DataObject>){
         this.gifs = data
         this.notifyDataSetChanged()
     }
