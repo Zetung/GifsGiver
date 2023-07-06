@@ -22,6 +22,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var adapter: GifsAdapter
 
+    private lateinit var gifApi: GifApi
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -30,8 +32,23 @@ class MainActivity : AppCompatActivity() {
         val retrofit = Retrofit.Builder().baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create()).build()
 
-        val gifApi = retrofit.create(GifApi::class.java)
+        gifApi = retrofit.create(GifApi::class.java)
 
+        loadData()
+
+        val gifs = mutableListOf<DataObject>()
+
+        adapter = GifsAdapter(this,gifs)
+        binding.gifView.layoutManager = LinearLayoutManager(this)
+        binding.gifView.adapter = adapter
+
+
+        binding.swipeRefresh.setOnRefreshListener {
+            loadData()
+        }
+    }
+
+    private fun loadData(){
         gifApi.getGifs().enqueue(object : Callback<AllGifs?> {
             override fun onResponse(call: Call<AllGifs?>, response: Response<AllGifs?>) {
                 val body = response.body()
@@ -42,11 +59,6 @@ class MainActivity : AppCompatActivity() {
 
             }
         })
-
-        val gifs = mutableListOf<DataObject>()
-
-        adapter = GifsAdapter(this,gifs)
-        binding.gifView.layoutManager = LinearLayoutManager(this)
-        binding.gifView.adapter = adapter
     }
+
 }
