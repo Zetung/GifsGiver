@@ -45,6 +45,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.swipeRefresh.setOnRefreshListener {
             loadData()
+            binding.swipeRefresh.isRefreshing = false
         }
     }
 
