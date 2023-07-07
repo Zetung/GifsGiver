@@ -54,19 +54,19 @@ class MainActivity : AppCompatActivity() {
                 if(response.isSuccessful){
                     val body = response.body()
                     body?.let { adapter.setData(it.gifs) }
-                    endResponse()
+                    stopProgressBarAnimation()
                 } else {
-                    endResponse()
+                    stopProgressBarAnimation()
                 }
             }
 
             override fun onFailure(call: Call<AllGifs?>, t: Throwable) {
-                endResponse()
+                stopProgressBarAnimation()
             }
         })
     }
 
-    private fun endResponse(){
+    private fun stopProgressBarAnimation(){
         binding.swipeRefresh.isRefreshing = false
     }
 }
