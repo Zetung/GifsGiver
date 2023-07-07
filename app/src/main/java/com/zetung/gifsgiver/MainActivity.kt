@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<AllGifs?>, t: Throwable) {
-
+                binding.swipeRefresh.isRefreshing = false
             }
         })
     }
