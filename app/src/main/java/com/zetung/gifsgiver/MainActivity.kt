@@ -54,16 +54,19 @@ class MainActivity : AppCompatActivity() {
                 if(response.isSuccessful){
                     val body = response.body()
                     body?.let { adapter.setData(it.gifs) }
-                    binding.swipeRefresh.isRefreshing = false
+                    endResponse()
                 } else {
-                    binding.swipeRefresh.isRefreshing = false
+                    endResponse()
                 }
             }
 
             override fun onFailure(call: Call<AllGifs?>, t: Throwable) {
-                binding.swipeRefresh.isRefreshing = false
+                endResponse()
             }
         })
     }
 
+    private fun endResponse(){
+        binding.swipeRefresh.isRefreshing = false
+    }
 }
