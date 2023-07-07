@@ -51,9 +51,13 @@ class MainActivity : AppCompatActivity() {
     private fun loadData(){
         gifApi.getGifs().enqueue(object : Callback<AllGifs?> {
             override fun onResponse(call: Call<AllGifs?>, response: Response<AllGifs?>) {
-                val body = response.body()
-                body?.let { adapter.setData(it.gifs) }
-                binding.swipeRefresh.isRefreshing = false
+                if(response.isSuccessful){
+                    val body = response.body()
+                    body?.let { adapter.setData(it.gifs) }
+                    binding.swipeRefresh.isRefreshing = false
+                } else {
+                    binding.swipeRefresh.isRefreshing = false
+                }
             }
 
             override fun onFailure(call: Call<AllGifs?>, t: Throwable) {
