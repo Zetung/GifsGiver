@@ -45,7 +45,6 @@ class MainActivity : AppCompatActivity() {
 
         binding.swipeRefresh.setOnRefreshListener {
             loadData()
-            binding.swipeRefresh.isRefreshing = false
         }
     }
 
@@ -54,6 +53,7 @@ class MainActivity : AppCompatActivity() {
             override fun onResponse(call: Call<AllGifs?>, response: Response<AllGifs?>) {
                 val body = response.body()
                 body?.let { adapter.setData(it.gifs) }
+                binding.swipeRefresh.isRefreshing = false
             }
 
             override fun onFailure(call: Call<AllGifs?>, t: Throwable) {
