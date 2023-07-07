@@ -22,6 +22,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var adapter: GifsAdapter
 
+    private lateinit var gifApi: GifApi
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -30,23 +32,41 @@ class MainActivity : AppCompatActivity() {
         val retrofit = Retrofit.Builder().baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create()).build()
 
-        val gifApi = retrofit.create(GifApi::class.java)
+        gifApi = retrofit.create(GifApi::class.java)
 
-        gifApi.getGifs().enqueue(object : Callback<AllGifs?> {
-            override fun onResponse(call: Call<AllGifs?>, response: Response<AllGifs?>) {
-                val body = response.body()
-                body?.let { adapter.setData(it.gifs) }
-            }
-
-            override fun onFailure(call: Call<AllGifs?>, t: Throwable) {
-
-            }
-        })
+        loadData()
 
         val gifs = mutableListOf<DataObject>()
 
         adapter = GifsAdapter(this,gifs)
         binding.gifView.layoutManager = LinearLayoutManager(this)
         binding.gifView.adapter = adapter
+
+
+        binding.swipeRefresh.setOnRefreshListener {
+            loadData()
+        }
+    }
+
+    private fun loadData(){
+        gifApi.getGifs().enqueue(object : Callback<AllGifs?> {
+            override fun onResponse(call: Call<AllGifs?>, response: Response<AllGifs?>) {
+                if(response.isSuccessful){
+                    val body = response.body()
+                    body?.let { adapter.setData(it.gifs) }
+                    stopProgressBarAnimation()
+                } else {
+                    stopProgressBarAnimation()
+                }
+            }
+
+            override fun onFailure(call: Call<AllGifs?>, t: Throwable) {
+                stopProgressBarAnimation()
+            }
+        })
+    }
+
+    private fun stopProgressBarAnimation(){
+        binding.swipeRefresh.isRefreshing = false
     }
 }
