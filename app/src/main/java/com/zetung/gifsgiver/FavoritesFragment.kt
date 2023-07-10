@@ -34,11 +34,18 @@ class FavoritesFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
+        val sharedPreferences = con.getSharedPreferences("like_prefs", Context.MODE_PRIVATE)
+        val localStorage = sharedPreferences.all as MutableMap<String,String>
         val gifs = mutableListOf<DataObject>()
-        val source1 = DataObject(DataGif(Gif("https://media4.giphy.com/media/1o16YVH3PTUFQ8uskW/giphy.gif?cid=a4fb3c122btpk3zbnotr4z6hanipkvmhr8u1kvqnfcnh6jil&ep=v1_gifs_trending&rid=giphy.gif&ct=g")))
-        gifs.add(source1)
-        gifs.add(source1)
-        gifs.add(source1)
+        for (record in localStorage){
+            gifs.add(DataObject(record.key, DataGif(Gif(record.value))))
+        }
+
+
+//        val source1 = DataObject(DataGif(Gif("https://media4.giphy.com/media/1o16YVH3PTUFQ8uskW/giphy.gif?cid=a4fb3c122btpk3zbnotr4z6hanipkvmhr8u1kvqnfcnh6jil&ep=v1_gifs_trending&rid=giphy.gif&ct=g")))
+//        gifs.add(source1)
+//        gifs.add(source1)
+//        gifs.add(source1)
 
         adapter = GifsAdapter(con,gifs)
         binding.gifView.layoutManager = LinearLayoutManager(con)

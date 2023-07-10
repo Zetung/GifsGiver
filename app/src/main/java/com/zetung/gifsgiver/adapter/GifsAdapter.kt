@@ -40,11 +40,18 @@ class GifsAdapter(val context: Context,var gifs: List<DataObject>) : RecyclerVie
 
         Glide.with(context).load(data.images.gif.url).into(holder.imageView)
 
+        val sharedPreferences = context.getSharedPreferences("like_prefs", Context.MODE_PRIVATE)
+        //val localStorage = sharedPreferences.all as MutableMap<String,String>
+
         holder.likeButton.setOnClickListener {
             if(holder.likeButton.isChecked){
-                Toast.makeText(context,position.toString(),Toast.LENGTH_SHORT).show()
+                val editor = sharedPreferences.edit()
+                editor.putString(data.id, data.images.gif.url)
+                editor.apply()
             } else {
-                Toast.makeText(context,"NO "+position.toString(),Toast.LENGTH_SHORT).show()
+                val editor = sharedPreferences.edit()
+                editor.remove(data.id)
+                editor.apply()
             }
         }
     }
