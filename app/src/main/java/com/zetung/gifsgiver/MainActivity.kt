@@ -2,14 +2,13 @@ package com.zetung.gifsgiver
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.zetung.gifsgiver.adapter.GifsAdapter
 import com.zetung.gifsgiver.api.GifApi
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import com.zetung.gifsgiver.databinding.ActivityMainBinding
 import com.zetung.gifsgiver.model.AllGifs
-import com.zetung.gifsgiver.model.DataObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -29,44 +28,32 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val retrofit = Retrofit.Builder().baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create()).build()
+//        val navigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+//        val navController = findNavController(R.id.fragmentContainer)
+//        navigationView.setupWithNavController(navController)
 
-        gifApi = retrofit.create(GifApi::class.java)
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragment) as NavHostFragment
+        val navController = navHostFragment.navController
+        val navigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        navigationView.setupWithNavController(navController)
 
-        loadData()
-
-        val gifs = mutableListOf<DataObject>()
-
-        adapter = GifsAdapter(this,gifs)
-        binding.gifView.layoutManager = LinearLayoutManager(this)
-        binding.gifView.adapter = adapter
-
-
-        binding.swipeRefresh.setOnRefreshListener {
-            loadData()
-        }
+//        val retrofit = Retrofit.Builder().baseUrl(BASE_URL)
+//            .addConverterFactory(GsonConverterFactory.create()).build()
+//
+//        gifApi = retrofit.create(GifApi::class.java)
+//
+//        loadData()
+//
+//        val gifs = mutableListOf<DataObject>()
+//
+//        adapter = GifsAdapter(this,gifs)
+//        binding.gifView.layoutManager = LinearLayoutManager(this)
+//        binding.gifView.adapter = adapter
+//
+//
+//        binding.swipeRefresh.setOnRefreshListener {
+//            loadData()
+//        }
     }
 
-    private fun loadData(){
-        gifApi.getGifs().enqueue(object : Callback<AllGifs?> {
-            override fun onResponse(call: Call<AllGifs?>, response: Response<AllGifs?>) {
-                if(response.isSuccessful){
-                    val body = response.body()
-                    body?.let { adapter.setData(it.gifs) }
-                    stopProgressBarAnimation()
-                } else {
-                    stopProgressBarAnimation()
-                }
-            }
-
-            override fun onFailure(call: Call<AllGifs?>, t: Throwable) {
-                stopProgressBarAnimation()
-            }
-        })
-    }
-
-    private fun stopProgressBarAnimation(){
-        binding.swipeRefresh.isRefreshing = false
-    }
 }
