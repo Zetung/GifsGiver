@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.zetung.gifsgiver.R
@@ -18,7 +20,7 @@ class GifsAdapter(val context: Context,var gifs: List<DataObject>) : RecyclerVie
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView = itemView.findViewById<ImageView>(R.id.ivGif)
-        val likeButton = itemView.findViewById<View>(R.id.likeButton)
+        val likeButton = itemView.findViewById<CheckBox>(R.id.likeButton)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -39,7 +41,11 @@ class GifsAdapter(val context: Context,var gifs: List<DataObject>) : RecyclerVie
         Glide.with(context).load(data.images.gif.url).into(holder.imageView)
 
         holder.likeButton.setOnClickListener {
-
+            if(holder.likeButton.isChecked){
+                Toast.makeText(context,position.toString(),Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context,"NO "+position.toString(),Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
