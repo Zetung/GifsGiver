@@ -39,7 +39,7 @@ class GifsAdapter(val context: Context,var gifs: List<DataObject>) : RecyclerVie
         Glide.with(context).load(data.images.gif.url).into(holder.imageView)
 
         holder.likeButton.setOnClickListener {
-            it.setBackgroundColor(R.color.purple)
+
         }
     }
 

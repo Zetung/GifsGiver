@@ -18,18 +18,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:src="@mipmap/ic_launcher"
         />
-
-    <View
+    <CheckBox
         android:id="@+id/likeButton"
-        android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_width="48dp"
+        android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginBottom="10dp"
-        android:layout_marginEnd="10dp"
-        android:background="@drawable/heart_view"
-        android:focusable="true" />
+        android:button="@drawable/like24"
+        app:buttonTint="@color/red"
+        android:scaleX="1.5"
+        android:scaleY="1.5"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
