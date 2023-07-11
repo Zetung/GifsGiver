@@ -17,7 +17,7 @@ import com.zetung.gifsgiver.model.DataObject
 import com.zetung.gifsgiver.model.Gif
 
 
-class GifsAdapter(val context: Context,var gifs: MutableList<DataObject>) : RecyclerView.Adapter<GifsAdapter.ViewHolder>(){
+class FavoriteAdapter(val context: Context,var gifs: MutableList<DataObject>) : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>(){
 
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -28,7 +28,7 @@ class GifsAdapter(val context: Context,var gifs: MutableList<DataObject>) : Recy
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView =
             LayoutInflater.from(parent.context)
-                .inflate(R.layout.gif_item, parent, false)
+                .inflate(R.layout.favorite_item, parent, false)
         return ViewHolder(itemView)
     }
 
@@ -43,22 +43,13 @@ class GifsAdapter(val context: Context,var gifs: MutableList<DataObject>) : Recy
         Glide.with(context).load(data.images.gif.url).into(holder.imageView)
 
         val sharedPreferences = context.getSharedPreferences("like_prefs", Context.MODE_PRIVATE)
-        val localStorage = sharedPreferences.all as MutableMap<String,String>
-        for (record in localStorage){
-            if(data.id == record.key)
-                holder.likeButton.isChecked = true
-        }
 
         holder.likeButton.setOnClickListener {
-            if(holder.likeButton.isChecked){
-                val editor = sharedPreferences.edit()
-                editor.putString(data.id, data.images.gif.url)
-                editor.apply()
-            } else {
-                val editor = sharedPreferences.edit()
-                editor.remove(data.id)
-                editor.apply()
-            }
+            val editor = sharedPreferences.edit()
+            editor.remove(data.id)
+            editor.apply()
+            gifs.remove(data)
+            this.notifyDataSetChanged()
         }
     }
 

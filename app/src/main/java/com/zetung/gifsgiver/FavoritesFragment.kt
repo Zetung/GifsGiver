@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.zetung.gifsgiver.adapter.FavoriteAdapter
 import com.zetung.gifsgiver.adapter.GifsAdapter
 import com.zetung.gifsgiver.databinding.FragmentFavoritesBinding
 import com.zetung.gifsgiver.model.DataGif
@@ -20,7 +21,7 @@ class FavoritesFragment : Fragment() {
 
     private lateinit var con: Context
 
-    private lateinit var adapter: GifsAdapter
+    private lateinit var adapter: FavoriteAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,7 +48,7 @@ class FavoritesFragment : Fragment() {
 //        gifs.add(source1)
 //        gifs.add(source1)
 
-        adapter = GifsAdapter(con,gifs)
+        adapter = FavoriteAdapter(con,gifs)
         binding.gifView.layoutManager = LinearLayoutManager(con)
         binding.gifView.adapter = adapter
 
