@@ -13,12 +13,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.zetung.gifsgiver.R
 import com.zetung.gifsgiver.api.LocalDb
+import com.zetung.gifsgiver.model.DataGif
 import com.zetung.gifsgiver.model.DataObject
 import com.zetung.gifsgiver.model.FavoritesModel
+import com.zetung.gifsgiver.model.Gif
 
-
-class GifsAdapter(val context: Context,var gifs: List<DataObject>) : RecyclerView.Adapter<GifsAdapter.ViewHolder>(){
-
+class FavoriteAdapter(val context: Context,var gifs: MutableList<FavoritesModel>) : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>(){
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView = itemView.findViewById<ImageView>(R.id.ivGif)
@@ -28,7 +28,7 @@ class GifsAdapter(val context: Context,var gifs: List<DataObject>) : RecyclerVie
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView =
             LayoutInflater.from(parent.context)
-                .inflate(R.layout.gif_item, parent, false)
+                .inflate(R.layout.favorite_item, parent, false)
         return ViewHolder(itemView)
     }
 
@@ -36,26 +36,24 @@ class GifsAdapter(val context: Context,var gifs: List<DataObject>) : RecyclerVie
         return gifs.size
     }
 
-    @SuppressLint("ResourceAsColor")
+    @SuppressLint("ResourceAsColor", "NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = gifs[position]
 
-        Glide.with(context).load(data.images.gif.url).into(holder.imageView)
+        Glide.with(context).load(data.url).into(holder.imageView)
 
         holder.likeButton.setOnClickListener {
-            if(holder.likeButton.isChecked){
-                LocalDb.getDb(context).getFavoritesDAO()
-                    .addToFavorite(FavoritesModel(data.id,data.images.gif.url))
-            } else {
-                LocalDb.getDb(context).getFavoritesDAO()
-                    .deleteFromFavorites(data.id)
-            }
+            LocalDb.getDb(context).getFavoritesDAO()
+                .deleteFromFavorites(data.id)
+            gifs.remove(data)
+            this.notifyDataSetChanged()
         }
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setData(data: List<DataObject>){
+    fun setData(data: MutableList<FavoritesModel>){
         this.gifs = data
         this.notifyDataSetChanged()
     }
+
 }

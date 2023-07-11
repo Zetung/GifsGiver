@@ -2,16 +2,23 @@ package com.zetung.gifsgiver
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.zetung.gifsgiver.adapter.FavoriteAdapter
 import com.zetung.gifsgiver.adapter.GifsAdapter
+import com.zetung.gifsgiver.api.LocalDb
 import com.zetung.gifsgiver.databinding.FragmentFavoritesBinding
 import com.zetung.gifsgiver.model.DataGif
 import com.zetung.gifsgiver.model.DataObject
+import com.zetung.gifsgiver.model.FavoritesModel
 import com.zetung.gifsgiver.model.Gif
+import java.sql.SQLException
+import kotlin.concurrent.thread
 
 class FavoritesFragment : Fragment() {
 
@@ -20,7 +27,9 @@ class FavoritesFragment : Fragment() {
 
     private lateinit var con: Context
 
-    private lateinit var adapter: GifsAdapter
+    private lateinit var adapter: FavoriteAdapter
+
+    private var favoritesList = mutableListOf<FavoritesModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,17 +43,35 @@ class FavoritesFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        val gifs = mutableListOf<DataObject>()
-        val source1 = DataObject(DataGif(Gif("https://media4.giphy.com/media/1o16YVH3PTUFQ8uskW/giphy.gif?cid=a4fb3c122btpk3zbnotr4z6hanipkvmhr8u1kvqnfcnh6jil&ep=v1_gifs_trending&rid=giphy.gif&ct=g")))
-        gifs.add(source1)
-        gifs.add(source1)
-        gifs.add(source1)
+//        val source1 = DataObject(DataGif(Gif("https://media4.giphy.com/media/1o16YVH3PTUFQ8uskW/giphy.gif?cid=a4fb3c122btpk3zbnotr4z6hanipkvmhr8u1kvqnfcnh6jil&ep=v1_gifs_trending&rid=giphy.gif&ct=g")))
+//        gifs.add(source1)
+//        gifs.add(source1)
+//        gifs.add(source1)
 
-        adapter = GifsAdapter(con,gifs)
+        loadFavorites {
+            if(it)
+                adapter.setData(favoritesList)
+        }
+
+        adapter = FavoriteAdapter(con,favoritesList)
         binding.gifView.layoutManager = LinearLayoutManager(con)
         binding.gifView.adapter = adapter
 
     }
 
+    private fun loadFavorites(callback:(Boolean)->Unit){
+        thread {
+            try {
+                favoritesList = LocalDb.getDb(con).getFavoritesDAO().getFavorites()
+                Handler(Looper.getMainLooper()).post{
+                    callback.invoke(true)
+                }
+            } catch (e:SQLException){
+                Handler(Looper.getMainLooper()).post{
+                    callback.invoke(false)
+                }
+            }
+        }
+    }
 
 }

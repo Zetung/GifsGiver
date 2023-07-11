@@ -7,6 +7,7 @@ data class AllGifs(
 )
 
 data class DataObject (
+    @SerializedName("id") val id: String,
     @SerializedName("images") val images: DataGif
 )
 
