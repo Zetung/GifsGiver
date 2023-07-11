@@ -2,6 +2,7 @@ package com.zetung.gifsgiver
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.zetung.gifsgiver.adapter.GifsAdapter
 import com.zetung.gifsgiver.api.GifApi
@@ -10,6 +11,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import com.zetung.gifsgiver.databinding.ActivityMainBinding
 import com.zetung.gifsgiver.model.AllGifs
 import com.zetung.gifsgiver.model.DataObject
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -29,7 +32,11 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val retrofit = Retrofit.Builder().baseUrl(BASE_URL)
+        val client = OkHttpClient.Builder()
+            .addInterceptor(LoggingInterceptor())
+            .build()
+
+        val retrofit = Retrofit.Builder().baseUrl(BASE_URL).client(client)
             .addConverterFactory(GsonConverterFactory.create()).build()
 
         gifApi = retrofit.create(GifApi::class.java)
@@ -69,4 +76,5 @@ class MainActivity : AppCompatActivity() {
     private fun stopProgressBarAnimation(){
         binding.swipeRefresh.isRefreshing = false
     }
+
 }
