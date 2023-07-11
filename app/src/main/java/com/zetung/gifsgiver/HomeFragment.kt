@@ -68,7 +68,7 @@ class HomeFragment : Fragment() {
             override fun onResponse(call: Call<AllGifs?>, response: Response<AllGifs?>) {
                 if(response.isSuccessful){
                     val body = response.body()
-                    body?.let { adapter.setData(it.gifs) }
+                    body?.let { adapter.setData(it.gifs as MutableList) }
                     stopProgressBarAnimation()
                 } else {
                     stopProgressBarAnimation()

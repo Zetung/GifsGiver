@@ -41,6 +41,15 @@ class FavoriteAdapter(val context: Context,var gifs: MutableList<FavoritesModel>
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = gifs[position]
 
+        //        Glide.with(context).load(data.images.gif.url).into(holder.imageView)
+//
+//        val sharedPreferences = context.getSharedPreferences("like_prefs", Context.MODE_PRIVATE)
+//
+//        holder.likeButton.setOnClickListener {
+//            val editor = sharedPreferences.edit()
+//            editor.remove(data.id)
+//            editor.apply()
+
         Glide.with(context).load(data.url).into(holder.imageView)
 
         holder.likeButton.setOnClickListener {

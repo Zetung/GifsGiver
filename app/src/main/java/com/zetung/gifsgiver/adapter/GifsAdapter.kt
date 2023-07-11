@@ -21,7 +21,7 @@ import java.sql.SQLException
 import kotlin.concurrent.thread
 
 
-class GifsAdapter(val context: Context,var gifs: List<DataObject>) : RecyclerView.Adapter<GifsAdapter.ViewHolder>(){
+class GifsAdapter(val context: Context,var gifs: MutableList<DataObject>) : RecyclerView.Adapter<GifsAdapter.ViewHolder>(){
 
     private lateinit var checkFavorites:MutableList<String>
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -50,6 +50,13 @@ class GifsAdapter(val context: Context,var gifs: List<DataObject>) : RecyclerVie
                 holder.likeButton.isChecked = true
         }
 
+        val sharedPreferences = context.getSharedPreferences("like_prefs", Context.MODE_PRIVATE)
+        val localStorage = sharedPreferences.all as MutableMap<String,String>
+        for (record in localStorage){
+            if(data.id == record.key)
+                holder.likeButton.isChecked = true
+        }
+
         holder.likeButton.setOnClickListener {
             if(holder.likeButton.isChecked){
                 thread {
@@ -72,8 +79,8 @@ class GifsAdapter(val context: Context,var gifs: List<DataObject>) : RecyclerVie
                 Handler(Looper.getMainLooper()).post{
                     callback.invoke(true)
                 }
-            } catch (e: SQLException){
-                Handler(Looper.getMainLooper()).post{
+            } catch (e: SQLException) {
+                Handler(Looper.getMainLooper()).post {
                     callback.invoke(false)
                 }
             }
@@ -81,7 +88,7 @@ class GifsAdapter(val context: Context,var gifs: List<DataObject>) : RecyclerVie
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setData(data: List<DataObject>){
+    fun setData(data: MutableList<DataObject>){
         this.gifs = data
         this.notifyDataSetChanged()
     }
