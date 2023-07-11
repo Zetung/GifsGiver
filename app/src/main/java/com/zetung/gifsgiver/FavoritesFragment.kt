@@ -13,6 +13,7 @@ import com.zetung.gifsgiver.adapter.FavoriteAdapter
 import com.zetung.gifsgiver.adapter.GifsAdapter
 import com.zetung.gifsgiver.api.LocalDb
 import com.zetung.gifsgiver.databinding.FragmentFavoritesBinding
+import com.zetung.gifsgiver.implementation.FavoriteShared
 import com.zetung.gifsgiver.model.DataGif
 import com.zetung.gifsgiver.model.DataObject
 import com.zetung.gifsgiver.model.FavoritesModel
@@ -43,19 +44,14 @@ class FavoritesFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        loadFavorites {
-            if(it)
-                adapter.setData(favoritesList)
-        }
-        adapter = FavoriteAdapter(con,favoritesList)
-//        val sharedPreferences = con.getSharedPreferences("like_prefs", Context.MODE_PRIVATE)
-//        val localStorage = sharedPreferences.all as MutableMap<String,String>
-//        val gifs = mutableListOf<DataObject>()
-//        for (record in localStorage){
-//            gifs.add(DataObject(record.key, DataGif(Gif(record.value))))
+//        loadFavorites {
+//            if(it)
+//                adapter.setData(favoritesList)
 //        }
-//        adapter = FavoriteAdapter(con,gifs)
 
+        val favoriteShared = FavoriteShared(con,"favorite_pref")
+        favoritesList = favoriteShared.getAllFavorites()
+        adapter = FavoriteAdapter(con,favoritesList)
         binding.gifView.layoutManager = LinearLayoutManager(con)
         binding.gifView.adapter = adapter
 

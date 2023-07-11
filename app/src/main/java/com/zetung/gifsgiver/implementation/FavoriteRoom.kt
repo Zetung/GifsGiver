@@ -1,4 +1,4 @@
-package com.zetung.gifsgiver
+package com.zetung.gifsgiver.implementation
 
 import com.zetung.gifsgiver.api.FavoriteDbApi
 import com.zetung.gifsgiver.model.FavoritesModel
