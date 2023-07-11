@@ -17,6 +17,7 @@ import com.zetung.gifsgiver.model.DataGif
 import com.zetung.gifsgiver.model.DataObject
 import com.zetung.gifsgiver.model.FavoritesModel
 import com.zetung.gifsgiver.model.Gif
+import kotlin.concurrent.thread
 
 class FavoriteAdapter(val context: Context,var gifs: MutableList<FavoritesModel>) : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>(){
 
@@ -43,8 +44,10 @@ class FavoriteAdapter(val context: Context,var gifs: MutableList<FavoritesModel>
         Glide.with(context).load(data.url).into(holder.imageView)
 
         holder.likeButton.setOnClickListener {
-            LocalDb.getDb(context).getFavoritesDAO()
-                .deleteFromFavorites(data.id)
+            thread {
+                LocalDb.getDb(context).getFavoritesDAO()
+                    .deleteFromFavorites(data.id)
+            }
             gifs.remove(data)
             this.notifyDataSetChanged()
         }

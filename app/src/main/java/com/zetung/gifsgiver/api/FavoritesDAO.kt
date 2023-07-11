@@ -13,4 +13,6 @@ interface FavoritesDAO {
     fun getFavorites(): MutableList<FavoritesModel>
     @Query("DELETE FROM favorites WHERE id=:id")
     fun deleteFromFavorites(id: String)
+    @Query("SELECT id FROM favorites")
+    fun getAllID(): MutableList<String>
 }
