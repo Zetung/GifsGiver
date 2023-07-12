@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.zetung.gifsgiver.R
+import com.zetung.gifsgiver.api.FavoriteDbApi
 import com.zetung.gifsgiver.api.LocalDb
 import com.zetung.gifsgiver.model.DataGif
 import com.zetung.gifsgiver.model.DataObject
@@ -19,7 +20,9 @@ import com.zetung.gifsgiver.model.FavoritesModel
 import com.zetung.gifsgiver.model.Gif
 import kotlin.concurrent.thread
 
-class FavoriteAdapter(val context: Context,var gifs: MutableList<FavoritesModel>) : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>(){
+class FavoriteAdapter(private val context: Context,
+                      var gifs: MutableList<FavoritesModel>,
+                      private val favoriteDb:FavoriteDbApi) : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>(){
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView = itemView.findViewById<ImageView>(R.id.ivGif)
@@ -37,26 +40,14 @@ class FavoriteAdapter(val context: Context,var gifs: MutableList<FavoritesModel>
         return gifs.size
     }
 
-    @SuppressLint("ResourceAsColor", "NotifyDataSetChanged")
+    @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = gifs[position]
-
-        //        Glide.with(context).load(data.images.gif.url).into(holder.imageView)
-//
-//        val sharedPreferences = context.getSharedPreferences("like_prefs", Context.MODE_PRIVATE)
-//
-//        holder.likeButton.setOnClickListener {
-//            val editor = sharedPreferences.edit()
-//            editor.remove(data.id)
-//            editor.apply()
 
         Glide.with(context).load(data.url).into(holder.imageView)
 
         holder.likeButton.setOnClickListener {
-            thread {
-                LocalDb.getDb(context).getFavoritesDAO()
-                    .deleteFromFavorites(data.id)
-            }
+            favoriteDb.deleteFromFavorite(data.id)
             gifs.remove(data)
             this.notifyDataSetChanged()
         }

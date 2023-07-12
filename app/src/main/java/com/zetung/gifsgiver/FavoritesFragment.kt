@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.zetung.gifsgiver.adapter.FavoriteAdapter
 import com.zetung.gifsgiver.adapter.GifsAdapter
+import com.zetung.gifsgiver.api.FavoriteDbApi
 import com.zetung.gifsgiver.api.LocalDb
 import com.zetung.gifsgiver.databinding.FragmentFavoritesBinding
 import com.zetung.gifsgiver.implementation.FavoriteShared
@@ -32,12 +33,15 @@ class FavoritesFragment : Fragment() {
 
     private var favoritesList = mutableListOf<FavoritesModel>()
 
+    private lateinit var favoriteDb : FavoriteDbApi
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentFavoritesBinding.inflate(inflater, container, false)
         con = requireContext()
+
         return binding.root
     }
 
@@ -49,9 +53,9 @@ class FavoritesFragment : Fragment() {
 //                adapter.setData(favoritesList)
 //        }
 
-        val favoriteShared = FavoriteShared(con,"favorite_pref")
-        favoritesList = favoriteShared.getAllFavorites()
-        adapter = FavoriteAdapter(con,favoritesList)
+        favoriteDb = FavoriteShared(con,"favorite_pref")
+        favoritesList = favoriteDb.getAllFavorites()
+        adapter = FavoriteAdapter(con,favoritesList,favoriteDb)
         binding.gifView.layoutManager = LinearLayoutManager(con)
         binding.gifView.adapter = adapter
 

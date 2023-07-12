@@ -21,4 +21,8 @@ class FavoriteRoom: FavoriteDbApi {
 
         return mutableListOf()
     }
+
+    override fun getAllFavoritesID(): MutableList<String> {
+        TODO("Not yet implemented")
+    }
 }

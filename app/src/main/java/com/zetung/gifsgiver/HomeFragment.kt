@@ -8,8 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.zetung.gifsgiver.adapter.GifsAdapter
+import com.zetung.gifsgiver.api.FavoriteDbApi
 import com.zetung.gifsgiver.api.GifApi
 import com.zetung.gifsgiver.databinding.FragmentHomeBinding
+import com.zetung.gifsgiver.implementation.FavoriteShared
 import com.zetung.gifsgiver.model.AllGifs
 import com.zetung.gifsgiver.model.DataObject
 import retrofit2.Call
@@ -30,6 +32,8 @@ class HomeFragment : Fragment() {
     private lateinit var adapter: GifsAdapter
 
     private lateinit var gifApi: GifApi
+
+    private lateinit var favoriteDb: FavoriteDbApi
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,7 +57,9 @@ class HomeFragment : Fragment() {
 
         val gifs = mutableListOf<DataObject>()
 
-        adapter = GifsAdapter(con,gifs)
+        favoriteDb = FavoriteShared(con,"favorite_pref")
+
+        adapter = GifsAdapter(con,gifs,favoriteDb,favoriteDb.getAllFavoritesID())
         binding.gifView.layoutManager = LinearLayoutManager(con)
         binding.gifView.adapter = adapter
 

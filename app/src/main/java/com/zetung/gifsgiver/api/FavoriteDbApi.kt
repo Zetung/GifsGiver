@@ -7,4 +7,5 @@ interface FavoriteDbApi {
     fun deleteFromFavorite(id:String)
     fun checkFavorite(id:String):Boolean
     fun getAllFavorites():MutableList<FavoritesModel>
+    fun getAllFavoritesID():MutableList<String>
 }

@@ -40,4 +40,13 @@ class FavoriteShared(context: Context, nameShared: String) : FavoriteDbApi {
         }
         return favorites
     }
+
+    override fun getAllFavoritesID(): MutableList<String> {
+        val localStorage = sharedPreferences.all as MutableMap<String,String>
+        val favorites = mutableListOf<String>()
+        for (record in localStorage){
+            favorites.add(record.key)
+        }
+        return favorites
+    }
 }
