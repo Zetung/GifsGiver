@@ -2,10 +2,10 @@ package com.zetung.gifsgiver
 
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.zetung.gifsgiver.adapter.GifsAdapter
@@ -13,10 +13,8 @@ import com.zetung.gifsgiver.api.FavoriteDbApi
 import com.zetung.gifsgiver.api.GifApi
 import com.zetung.gifsgiver.databinding.FragmentHomeBinding
 import com.zetung.gifsgiver.implementation.FavoriteRoom
-import com.zetung.gifsgiver.implementation.FavoriteShared
 import com.zetung.gifsgiver.model.AllGifs
 import com.zetung.gifsgiver.model.DataObject
-import com.zetung.gifsgiver.model.FavoritesModel
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
@@ -42,7 +40,7 @@ class HomeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         con = requireContext()
         //favoriteDb = FavoriteShared(con,"favorite_pref")

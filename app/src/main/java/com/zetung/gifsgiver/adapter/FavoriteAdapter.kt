@@ -3,26 +3,15 @@ package com.zetung.gifsgiver.adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.zetung.gifsgiver.R
 import com.zetung.gifsgiver.api.FavoriteDbApi
-import com.zetung.gifsgiver.api.LocalDb
-import com.zetung.gifsgiver.model.DataGif
-import com.zetung.gifsgiver.model.DataObject
 import com.zetung.gifsgiver.model.FavoritesModel
-import com.zetung.gifsgiver.model.Gif
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
-import kotlin.concurrent.thread
 
 class FavoriteAdapter(private val context: Context,
                       var gifs: MutableList<FavoritesModel>,
@@ -53,14 +42,8 @@ class FavoriteAdapter(private val context: Context,
         holder.likeButton.setOnClickListener {
             favoriteDb.deleteFromFavorite(data.id)
             gifs.remove(data)
-            this.notifyDataSetChanged()
+            this.notifyItemRemoved(position)
         }
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun setData(data: MutableList<FavoritesModel>){
-        this.gifs = data
-        this.notifyDataSetChanged()
     }
 
 }
