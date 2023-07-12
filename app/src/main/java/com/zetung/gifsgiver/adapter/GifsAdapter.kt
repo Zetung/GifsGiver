@@ -18,6 +18,9 @@ import com.zetung.gifsgiver.api.FavoriteDbApi
 import com.zetung.gifsgiver.api.LocalDb
 import com.zetung.gifsgiver.model.DataObject
 import com.zetung.gifsgiver.model.FavoritesModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.sql.SQLException
 import kotlin.concurrent.thread
 
@@ -53,10 +56,14 @@ class GifsAdapter(private val context: Context,
 
         holder.likeButton.setOnClickListener {
             if(holder.likeButton.isChecked){
-                favoriteDb.addToFavorite(data.id,data.images.gif.url)
+                CoroutineScope(Dispatchers.IO).launch {
+                    favoriteDb.addToFavorite(data.id,data.images.gif.url)
+                }
                 favoriteList.add(data.id)
             } else {
-                favoriteDb.deleteFromFavorite(data.id)
+                CoroutineScope(Dispatchers.IO).launch {
+                    favoriteDb.deleteFromFavorite(data.id)
+                }
                 favoriteList.remove(data.id)
             }
         }

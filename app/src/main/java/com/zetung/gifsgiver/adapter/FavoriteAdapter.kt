@@ -18,6 +18,10 @@ import com.zetung.gifsgiver.model.DataGif
 import com.zetung.gifsgiver.model.DataObject
 import com.zetung.gifsgiver.model.FavoritesModel
 import com.zetung.gifsgiver.model.Gif
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlin.concurrent.thread
 
 class FavoriteAdapter(private val context: Context,
@@ -47,7 +51,9 @@ class FavoriteAdapter(private val context: Context,
         Glide.with(context).load(data.url).into(holder.imageView)
 
         holder.likeButton.setOnClickListener {
-            favoriteDb.deleteFromFavorite(data.id)
+            CoroutineScope(Dispatchers.IO).launch {
+                favoriteDb.deleteFromFavorite(data.id)
+            }
             gifs.remove(data)
             this.notifyDataSetChanged()
         }

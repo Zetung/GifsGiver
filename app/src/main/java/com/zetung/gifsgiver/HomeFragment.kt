@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.zetung.gifsgiver.adapter.GifsAdapter
 import com.zetung.gifsgiver.api.FavoriteDbApi
@@ -14,6 +15,7 @@ import com.zetung.gifsgiver.databinding.FragmentHomeBinding
 import com.zetung.gifsgiver.implementation.FavoriteShared
 import com.zetung.gifsgiver.model.AllGifs
 import com.zetung.gifsgiver.model.DataObject
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -41,6 +43,7 @@ class HomeFragment : Fragment() {
     ): View? {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         con = requireContext()
+        favoriteDb = FavoriteShared(con,"favorite_pref")
         return binding.root
     }
 
@@ -56,10 +59,12 @@ class HomeFragment : Fragment() {
 
 
         val gifs = mutableListOf<DataObject>()
+        var favoriteList = mutableListOf<String>()
+        lifecycleScope.launch {
+            favoriteList = favoriteDb.getAllFavoritesID()
 
-        favoriteDb = FavoriteShared(con,"favorite_pref")
-
-        adapter = GifsAdapter(con,gifs,favoriteDb,favoriteDb.getAllFavoritesID())
+        }
+        adapter = GifsAdapter(con,gifs,favoriteDb,favoriteList)
         binding.gifView.layoutManager = LinearLayoutManager(con)
         binding.gifView.adapter = adapter
 

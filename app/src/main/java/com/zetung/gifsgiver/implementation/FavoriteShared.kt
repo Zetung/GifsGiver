@@ -12,19 +12,19 @@ class FavoriteShared(context: Context, nameShared: String) : FavoriteDbApi {
         sharedPreferences = context.getSharedPreferences(nameShared,Context.MODE_PRIVATE)
     }
 
-    override fun addToFavorite(id: String, url: String) {
+    override suspend fun addToFavorite(id: String, url: String) {
         val editor = sharedPreferences.edit()
         editor.putString(id, url)
         editor.apply()
     }
 
-    override fun deleteFromFavorite(id: String) {
+    override suspend fun deleteFromFavorite(id: String) {
         val editor = sharedPreferences.edit()
         editor.remove(id)
         editor.apply()
     }
 
-    override fun checkFavorite(id: String): Boolean {
+    override suspend fun checkFavorite(id: String): Boolean {
         val localStorage = sharedPreferences.all as MutableMap<String,String>
         for (record in localStorage){
             return id == record.key
@@ -32,7 +32,7 @@ class FavoriteShared(context: Context, nameShared: String) : FavoriteDbApi {
         return false
     }
 
-    override fun getAllFavorites(): MutableList<FavoritesModel> {
+    override suspend fun getAllFavorites(): MutableList<FavoritesModel> {
         val localStorage = sharedPreferences.all as MutableMap<String,String>
         val favorites = mutableListOf<FavoritesModel>()
         for (record in localStorage){
@@ -41,7 +41,7 @@ class FavoriteShared(context: Context, nameShared: String) : FavoriteDbApi {
         return favorites
     }
 
-    override fun getAllFavoritesID(): MutableList<String> {
+    override suspend fun getAllFavoritesID(): MutableList<String> {
         val localStorage = sharedPreferences.all as MutableMap<String,String>
         val favorites = mutableListOf<String>()
         for (record in localStorage){

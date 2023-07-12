@@ -8,11 +8,11 @@ import com.zetung.gifsgiver.model.FavoritesModel
 @Dao
 interface FavoritesDAO {
     @Insert
-    fun addToFavorite(favoritesModel: FavoritesModel)
+    suspend fun addToFavorite(favoritesModel: FavoritesModel)
     @Query("SELECT * FROM favorites")
-    fun getFavorites(): MutableList<FavoritesModel>
+    suspend fun getFavorites(): MutableList<FavoritesModel>
     @Query("DELETE FROM favorites WHERE id=:id")
-    fun deleteFromFavorites(id: String)
+    suspend fun deleteFromFavorites(id: String)
     @Query("SELECT id FROM favorites")
-    fun getAllID(): MutableList<String>
+    suspend fun getAllID(): MutableList<String>
 }
