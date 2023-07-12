@@ -36,19 +36,18 @@ class GifsAdapter(private val context: Context,
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val data = gifs[position]
-
-        Glide.with(context).load(data.images.gif.url).into(holder.imageView)
-
-        holder.likeButton.isChecked = data.id in favoriteList
-
-        holder.likeButton.setOnClickListener {
-            if(holder.likeButton.isChecked){
-                favoriteDb.addToFavorite(data.id,data.images.gif.url)
-                favoriteList.add(data.id)
-            } else {
-                favoriteDb.deleteFromFavorite(data.id)
-                favoriteList.remove(data.id)
+        if(holder.adapterPosition != RecyclerView.NO_POSITION){
+            val data = gifs[holder.adapterPosition]
+            Glide.with(context).load(data.images.gif.url).into(holder.imageView)
+            holder.likeButton.isChecked = data.id in favoriteList
+            holder.likeButton.setOnClickListener {
+                if(holder.likeButton.isChecked){
+                    favoriteDb.addToFavorite(data.id,data.images.gif.url)
+                    favoriteList.add(data.id)
+                } else {
+                    favoriteDb.deleteFromFavorite(data.id)
+                    favoriteList.remove(data.id)
+                }
             }
         }
     }

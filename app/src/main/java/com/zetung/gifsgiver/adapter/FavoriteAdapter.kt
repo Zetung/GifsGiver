@@ -35,14 +35,15 @@ class FavoriteAdapter(private val context: Context,
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val data = gifs[position]
+        if(holder.adapterPosition != RecyclerView.NO_POSITION){
+            val data = gifs[holder.adapterPosition]
+            Glide.with(context).load(data.url).into(holder.imageView)
 
-        Glide.with(context).load(data.url).into(holder.imageView)
-
-        holder.likeButton.setOnClickListener {
-            favoriteDb.deleteFromFavorite(data.id)
-            gifs.remove(data)
-            this.notifyItemRemoved(position)
+            holder.likeButton.setOnClickListener {
+                favoriteDb.deleteFromFavorite(data.id)
+                gifs.remove(data)
+                this.notifyItemRemoved(holder.adapterPosition)
+            }
         }
     }
 
