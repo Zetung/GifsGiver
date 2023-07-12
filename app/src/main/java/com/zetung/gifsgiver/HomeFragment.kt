@@ -12,9 +12,11 @@ import com.zetung.gifsgiver.adapter.GifsAdapter
 import com.zetung.gifsgiver.api.FavoriteDbApi
 import com.zetung.gifsgiver.api.GifApi
 import com.zetung.gifsgiver.databinding.FragmentHomeBinding
+import com.zetung.gifsgiver.implementation.FavoriteRoom
 import com.zetung.gifsgiver.implementation.FavoriteShared
 import com.zetung.gifsgiver.model.AllGifs
 import com.zetung.gifsgiver.model.DataObject
+import com.zetung.gifsgiver.model.FavoritesModel
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
@@ -43,7 +45,8 @@ class HomeFragment : Fragment() {
     ): View? {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         con = requireContext()
-        favoriteDb = FavoriteShared(con,"favorite_pref")
+        //favoriteDb = FavoriteShared(con,"favorite_pref")
+        favoriteDb = FavoriteRoom(con)
         return binding.root
     }
 
@@ -62,11 +65,10 @@ class HomeFragment : Fragment() {
         var favoriteList = mutableListOf<String>()
         lifecycleScope.launch {
             favoriteList = favoriteDb.getAllFavoritesID()
-
+            adapter = GifsAdapter(con,gifs,favoriteDb,favoriteList)
+            binding.gifView.layoutManager = LinearLayoutManager(con)
+            binding.gifView.adapter = adapter
         }
-        adapter = GifsAdapter(con,gifs,favoriteDb,favoriteList)
-        binding.gifView.layoutManager = LinearLayoutManager(con)
-        binding.gifView.adapter = adapter
 
 
         binding.swipeRefresh.setOnRefreshListener {

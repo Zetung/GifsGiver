@@ -15,6 +15,7 @@ import com.zetung.gifsgiver.adapter.GifsAdapter
 import com.zetung.gifsgiver.api.FavoriteDbApi
 import com.zetung.gifsgiver.api.LocalDb
 import com.zetung.gifsgiver.databinding.FragmentFavoritesBinding
+import com.zetung.gifsgiver.implementation.FavoriteRoom
 import com.zetung.gifsgiver.implementation.FavoriteShared
 import com.zetung.gifsgiver.model.DataGif
 import com.zetung.gifsgiver.model.DataObject
@@ -43,7 +44,8 @@ class FavoritesFragment : Fragment() {
     ): View? {
         _binding = FragmentFavoritesBinding.inflate(inflater, container, false)
         con = requireContext()
-        favoriteDb = FavoriteShared(con,"favorite_pref")
+        //favoriteDb = FavoriteShared(con,"favorite_pref")
+        favoriteDb = FavoriteRoom(con)
         return binding.root
     }
 
@@ -52,10 +54,10 @@ class FavoritesFragment : Fragment() {
 
         lifecycleScope.launch {
             favoritesList = favoriteDb.getAllFavorites()
+            adapter = FavoriteAdapter(con,favoritesList,favoriteDb)
+            binding.gifView.layoutManager = LinearLayoutManager(con)
+            binding.gifView.adapter = adapter
         }
-        adapter = FavoriteAdapter(con,favoritesList,favoriteDb)
-        binding.gifView.layoutManager = LinearLayoutManager(con)
-        binding.gifView.adapter = adapter
 
     }
 

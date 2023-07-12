@@ -12,13 +12,13 @@ class FavoriteShared(context: Context, nameShared: String) : FavoriteDbApi {
         sharedPreferences = context.getSharedPreferences(nameShared,Context.MODE_PRIVATE)
     }
 
-    override suspend fun addToFavorite(id: String, url: String) {
+    override fun addToFavorite(id: String, url: String) {
         val editor = sharedPreferences.edit()
         editor.putString(id, url)
         editor.apply()
     }
 
-    override suspend fun deleteFromFavorite(id: String) {
+    override fun deleteFromFavorite(id: String) {
         val editor = sharedPreferences.edit()
         editor.remove(id)
         editor.apply()

@@ -56,14 +56,10 @@ class GifsAdapter(private val context: Context,
 
         holder.likeButton.setOnClickListener {
             if(holder.likeButton.isChecked){
-                CoroutineScope(Dispatchers.IO).launch {
-                    favoriteDb.addToFavorite(data.id,data.images.gif.url)
-                }
+                favoriteDb.addToFavorite(data.id,data.images.gif.url)
                 favoriteList.add(data.id)
             } else {
-                CoroutineScope(Dispatchers.IO).launch {
-                    favoriteDb.deleteFromFavorite(data.id)
-                }
+                favoriteDb.deleteFromFavorite(data.id)
                 favoriteList.remove(data.id)
             }
         }

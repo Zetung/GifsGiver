@@ -51,9 +51,7 @@ class FavoriteAdapter(private val context: Context,
         Glide.with(context).load(data.url).into(holder.imageView)
 
         holder.likeButton.setOnClickListener {
-            CoroutineScope(Dispatchers.IO).launch {
-                favoriteDb.deleteFromFavorite(data.id)
-            }
+            favoriteDb.deleteFromFavorite(data.id)
             gifs.remove(data)
             this.notifyDataSetChanged()
         }
