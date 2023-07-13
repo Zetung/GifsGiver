@@ -75,4 +75,8 @@ class HomeFragment : Fragment() {
         binding.swipeRefresh.isRefreshing = false
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }
