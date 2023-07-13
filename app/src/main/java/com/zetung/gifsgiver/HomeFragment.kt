@@ -10,15 +10,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.zetung.gifsgiver.adapter.GifsAdapter
 import com.zetung.gifsgiver.api.FavoriteDbApi
-import com.zetung.gifsgiver.api.GifApi
 import com.zetung.gifsgiver.databinding.FragmentHomeBinding
 import com.zetung.gifsgiver.implementation.FavoriteRoom
 import com.zetung.gifsgiver.implementation.RetrofitConnect
-import com.zetung.gifsgiver.model.AllGifs
 import com.zetung.gifsgiver.model.DataObject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {

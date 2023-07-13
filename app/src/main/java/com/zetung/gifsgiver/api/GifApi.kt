@@ -1,7 +1,6 @@
 package com.zetung.gifsgiver.api
 
 import com.zetung.gifsgiver.model.AllGifs
-import com.zetung.gifsgiver.model.DataObject
 import retrofit2.http.GET
 
 interface GifApi {
