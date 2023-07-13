@@ -17,7 +17,7 @@ import com.zetung.gifsgiver.model.DataObject
 class GifsAdapter(private val context: Context,
                   var gifs: MutableList<DataObject>,
                   private val favoriteDb: FavoriteDbApi,
-                  private val favoriteList: MutableList<String>) : RecyclerView.Adapter<GifsAdapter.ViewHolder>(){
+                  private var favoriteList: MutableList<String>) : RecyclerView.Adapter<GifsAdapter.ViewHolder>(){
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView = itemView.findViewById<ImageView>(R.id.ivGif)
@@ -55,6 +55,12 @@ class GifsAdapter(private val context: Context,
     @SuppressLint("NotifyDataSetChanged")
     fun setData(data: MutableList<DataObject>){
         this.gifs = data
+        this.notifyDataSetChanged()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun setFavorite(favorites: MutableList<String>){
+        this.favoriteList = favorites
         this.notifyDataSetChanged()
     }
 }

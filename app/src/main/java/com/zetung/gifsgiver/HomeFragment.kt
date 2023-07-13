@@ -13,18 +13,15 @@ import com.zetung.gifsgiver.api.FavoriteDbApi
 import com.zetung.gifsgiver.api.GifApi
 import com.zetung.gifsgiver.databinding.FragmentHomeBinding
 import com.zetung.gifsgiver.implementation.FavoriteRoom
+import com.zetung.gifsgiver.implementation.RetrofitConnect
 import com.zetung.gifsgiver.model.AllGifs
 import com.zetung.gifsgiver.model.DataObject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class HomeFragment : Fragment() {
-
-    private val BASE_URL = "https://api.giphy.com/v1/"
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -33,9 +30,8 @@ class HomeFragment : Fragment() {
 
     private lateinit var adapter: GifsAdapter
 
-    private lateinit var gifApi: GifApi
-
     private lateinit var favoriteDb: FavoriteDbApi
+    private val retrofitConnect = RetrofitConnect()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,45 +47,29 @@ class HomeFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        val retrofit = Retrofit.Builder().baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create()).build()
-
-        gifApi = retrofit.create(GifApi::class.java)
-
-        loadData()
-
-
-        val gifs = mutableListOf<DataObject>()
+        var gifs = mutableListOf<DataObject>()
         var favoriteList = mutableListOf<String>()
+        adapter = GifsAdapter(con,gifs,favoriteDb,favoriteList)
+        binding.gifView.layoutManager = LinearLayoutManager(con)
+        binding.gifView.adapter = adapter
+
+        lifecycleScope.launch {
+            gifs = retrofitConnect.loadGif()
+            adapter.setData(gifs)
+        }
+
         lifecycleScope.launch {
             favoriteList = favoriteDb.getAllFavoritesID()
-            adapter = GifsAdapter(con,gifs,favoriteDb,favoriteList)
-            binding.gifView.layoutManager = LinearLayoutManager(con)
-            binding.gifView.adapter = adapter
+            adapter.setFavorite(favoriteList)
         }
 
 
         binding.swipeRefresh.setOnRefreshListener {
-            loadData()
-        }
-    }
-
-    private fun loadData(){
-        gifApi.getGifs().enqueue(object : Callback<AllGifs?> {
-            override fun onResponse(call: Call<AllGifs?>, response: Response<AllGifs?>) {
-                if(response.isSuccessful){
-                    val body = response.body()
-                    body?.let { adapter.setData(it.gifs as MutableList) }
-                    stopProgressBarAnimation()
-                } else {
-                    stopProgressBarAnimation()
-                }
-            }
-
-            override fun onFailure(call: Call<AllGifs?>, t: Throwable) {
+            CoroutineScope(Dispatchers.Main).launch{
+                adapter.setData(retrofitConnect.loadGif())
                 stopProgressBarAnimation()
             }
-        })
+        }
     }
 
     private fun stopProgressBarAnimation(){
