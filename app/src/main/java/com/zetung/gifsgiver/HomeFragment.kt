@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.zetung.gifsgiver.adapter.GifsAdapter
+import com.zetung.gifsgiver.api.ConnectionApi
 import com.zetung.gifsgiver.api.FavoriteDbApi
 import com.zetung.gifsgiver.databinding.FragmentHomeBinding
 import com.zetung.gifsgiver.implementation.FavoriteRoom
@@ -28,7 +29,7 @@ class HomeFragment : Fragment() {
     private lateinit var adapter: GifsAdapter
 
     private lateinit var favoriteDb: FavoriteDbApi
-    private val retrofitConnect = RetrofitConnect()
+    private lateinit var retrofitConnect: ConnectionApi
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,6 +39,7 @@ class HomeFragment : Fragment() {
         con = requireContext()
         //favoriteDb = FavoriteShared(con,"favorite_pref")
         favoriteDb = FavoriteRoom(con)
+        retrofitConnect = RetrofitConnect()
         return binding.root
     }
 

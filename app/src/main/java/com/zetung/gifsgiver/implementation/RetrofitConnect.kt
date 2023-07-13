@@ -1,13 +1,14 @@
 package com.zetung.gifsgiver.implementation
 
 import com.zetung.gifsgiver.LoggingInterceptor
+import com.zetung.gifsgiver.api.ConnectionApi
 import com.zetung.gifsgiver.api.GifApi
 import com.zetung.gifsgiver.model.DataObject
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class RetrofitConnect {
+class RetrofitConnect: ConnectionApi {
     private val BASE_URL = "https://api.giphy.com/v1/"
     private var gifApi: GifApi
 
@@ -22,7 +23,7 @@ class RetrofitConnect {
         gifApi = retrofit.create(GifApi::class.java)
     }
 
-    suspend fun loadGif(): MutableList<DataObject> {
+    override suspend fun loadGif(): MutableList<DataObject> {
         return gifApi.getGifs().gifs as MutableList<DataObject>
     }
 }
