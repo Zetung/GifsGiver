@@ -9,10 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.zetung.gifsgiver.util.ConnectionApi
-import com.zetung.gifsgiver.repository.FavoriteDbApi
 import com.zetung.gifsgiver.databinding.FragmentHomeBinding
-import com.zetung.gifsgiver.repository.implementation.FavoriteRoom
 import com.zetung.gifsgiver.repository.model.DataObject
 import com.zetung.gifsgiver.repository.model.FavoritesModel
 import com.zetung.gifsgiver.ui.OnLikeClickListener
@@ -25,12 +22,8 @@ class HomeFragment : Fragment(), OnLikeClickListener {
 
     private lateinit var adapter: GifsAdapter
 
-    private lateinit var favoriteDb: FavoriteDbApi
-    private lateinit var retrofitConnect: ConnectionApi
-
-
     private lateinit var favoritesViewModel: FavoritesViewModel
-    private lateinit var retrofitViewModel: RetrofitViewModel
+    private lateinit var homeViewModel: HomeViewModel
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(
@@ -38,8 +31,6 @@ class HomeFragment : Fragment(), OnLikeClickListener {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        //favoriteDb = FavoriteShared(con,"favorite_pref")
-        favoriteDb = FavoriteRoom(requireContext())
 
         favoritesViewModel = ViewModelProvider(this).get(FavoritesViewModel::class.java)
         val favoritesObserver = Observer<List<FavoritesModel>> { favoritesList ->
@@ -48,46 +39,22 @@ class HomeFragment : Fragment(), OnLikeClickListener {
         }
         favoritesViewModel.favorites.observe(viewLifecycleOwner, favoritesObserver)
 
-        retrofitViewModel = ViewModelProvider(this).get(RetrofitViewModel::class.java)
+        homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         val gifsObserver = Observer<List<DataObject>> { gifsList ->
             adapter.gifs = gifsList.toMutableList()
             adapter.notifyDataSetChanged()
         }
-        retrofitViewModel.gifs.observe(viewLifecycleOwner, gifsObserver)
+        homeViewModel.gifs.observe(viewLifecycleOwner, gifsObserver)
 
         adapter = GifsAdapter(requireContext(),
-            retrofitViewModel.gifs.value.orEmpty().toMutableList(),
-            favoriteDb,
+            homeViewModel.gifs.value.orEmpty().toMutableList(),
             favoritesViewModel.favorites.value.orEmpty().toMutableList())
         adapter.setOnButtonClickListener(this)
         binding.gifView.layoutManager = LinearLayoutManager(requireContext())
         binding.gifView.adapter = adapter
 
-
-        var gifs = mutableListOf<DataObject>()
-        var favoriteList = mutableListOf<String>()
-//        adapter = GifsAdapter(requireContext(),gifs,favoriteDb,favoriteList)
-//        binding.gifView.layoutManager = LinearLayoutManager(requireContext())
-//        binding.gifView.adapter = adapter
-
-//        retrofitConnect = RetrofitConnect()
-//        lifecycleScope.launch {
-//            gifs = retrofitConnect.loadGif()
-//            adapter.setData(gifs)
-//        }
-//
-//        lifecycleScope.launch {
-//            favoriteList = favoriteDb.getAllFavoritesID()
-//            adapter.setFavorite(favoriteList)
-//        }
-
-
         binding.swipeRefresh.setOnRefreshListener {
-//            CoroutineScope(Dispatchers.Main).launch{
-//                adapter.setData(retrofitConnect.loadGif())
-//                stopProgressBarAnimation()
-//            }
-            retrofitViewModel.loadGif()
+            homeViewModel.loadGif()
             stopProgressBarAnimation()
         }
 
@@ -96,7 +63,7 @@ class HomeFragment : Fragment(), OnLikeClickListener {
     }
 
     override fun onLikeClick(position: Int, data: FavoritesModel, isLiked: Boolean) {
-        if(isLiked) {
+        if(!isLiked) {
             favoritesViewModel.deleteLike(data)
             adapter.favoriteList.remove(data)
         } else {

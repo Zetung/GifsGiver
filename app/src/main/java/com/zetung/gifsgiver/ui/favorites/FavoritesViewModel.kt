@@ -1,7 +1,6 @@
 package com.zetung.gifsgiver.ui.favorites
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.zetung.gifsgiver.repository.implementation.FavoriteRoom

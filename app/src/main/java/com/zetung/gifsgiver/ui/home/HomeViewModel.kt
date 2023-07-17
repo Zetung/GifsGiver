@@ -9,7 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class RetrofitViewModel (application: Application): AndroidViewModel(application) {
+class HomeViewModel (application: Application): AndroidViewModel(application) {
 
     private val retrofitConnect = RetrofitConnect()
 

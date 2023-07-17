@@ -16,5 +16,6 @@ data class DataGif (
 )
 
 data class Gif(
-    val url: String
+    val url: String,
+    var like:Boolean = false
 )
