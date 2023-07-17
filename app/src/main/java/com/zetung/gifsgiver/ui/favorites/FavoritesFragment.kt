@@ -17,9 +17,10 @@ import com.zetung.gifsgiver.repository.FavoriteDbApi
 import com.zetung.gifsgiver.databinding.FragmentFavoritesBinding
 import com.zetung.gifsgiver.repository.implementation.FavoriteRoom
 import com.zetung.gifsgiver.repository.model.FavoritesModel
+import com.zetung.gifsgiver.ui.OnLikeClickListener
 import kotlinx.coroutines.launch
 
-class FavoritesFragment : Fragment() {
+class FavoritesFragment : Fragment(), OnLikeClickListener {
 
     private var _binding: FragmentFavoritesBinding? = null
     private val binding get() = _binding!!
@@ -29,6 +30,9 @@ class FavoritesFragment : Fragment() {
     private var favoritesList = mutableListOf<FavoritesModel>()
 
     private lateinit var favoriteDb : FavoriteDbApi
+
+    private lateinit var favoritesViewModel: FavoritesViewModel
+
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(
@@ -40,8 +44,7 @@ class FavoritesFragment : Fragment() {
         //favoriteDb = FavoriteShared(con,"favorite_pref")
         //favoriteDb = FavoriteRoom(requireContext())
 
-        val favoritesViewModel =
-            ViewModelProvider(this).get(FavoritesViewModel::class.java)
+        favoritesViewModel = ViewModelProvider(this).get(FavoritesViewModel::class.java)
 
         val favoritesObserver = Observer<List<FavoritesModel>> { favoritesList ->
             adapter.gifs = favoritesList.toMutableList()
@@ -51,6 +54,7 @@ class FavoritesFragment : Fragment() {
         favoritesViewModel.favorites.observe(viewLifecycleOwner, favoritesObserver)
 
         adapter = FavoriteAdapter(requireContext(), favoritesViewModel.favorites.value.orEmpty().toMutableList())
+        adapter.setOnButtonClickListener(this)
         binding.gifView.layoutManager = LinearLayoutManager(requireContext())
         binding.gifView.adapter = adapter
 
@@ -64,7 +68,13 @@ class FavoritesFragment : Fragment() {
 
         return binding.root
     }
-
+    override fun onLikeClick(position: Int, data: FavoritesModel, isLiked: Boolean) {
+        if(isLiked) {
+            favoritesViewModel.deleteLike(data)
+            adapter.gifs.remove(data)
+            adapter.notifyItemRemoved(position)
+        }
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

@@ -14,11 +14,18 @@ import com.bumptech.glide.Glide
 import com.zetung.gifsgiver.R
 import com.zetung.gifsgiver.repository.FavoriteDbApi
 import com.zetung.gifsgiver.repository.model.FavoritesModel
+import com.zetung.gifsgiver.ui.OnLikeClickListener
 
 class FavoriteAdapter(private val context: Context,
                       var gifs: MutableList<FavoritesModel>,
                       //private val favoriteDb: FavoriteDbApi
 ) : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>(){
+
+    private lateinit var likeClickListener: OnLikeClickListener
+
+    fun setOnButtonClickListener(listener: OnLikeClickListener) {
+        likeClickListener = listener
+    }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView = itemView.findViewById<ImageView>(R.id.ivGif)
@@ -57,8 +64,10 @@ class FavoriteAdapter(private val context: Context,
 
             holder.likeButton.setOnClickListener {
                 //favoriteDb.deleteFromFavorite(data.id)
-                gifs.remove(data)
-                this.notifyItemRemoved(holder.adapterPosition)
+                likeClickListener.onLikeClick(holder.adapterPosition,data, true)
+
+//                gifs.remove(data)
+//                this.notifyItemRemoved(holder.adapterPosition)
             }
         }
     }

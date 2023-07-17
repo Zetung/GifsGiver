@@ -20,4 +20,9 @@ class FavoritesViewModel (application: Application): AndroidViewModel(applicatio
         }
     }
 
+    fun deleteLike(data: FavoritesModel){
+        favorites.value!!.remove(data)
+        favoriteDb.deleteFromFavorite(data.id)
+    }
+
 }
