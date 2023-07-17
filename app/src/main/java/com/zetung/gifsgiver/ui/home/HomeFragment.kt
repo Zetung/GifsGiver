@@ -23,8 +23,6 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var con: Context
-
     private lateinit var adapter: GifsAdapter
 
     private lateinit var favoriteDb: FavoriteDbApi
@@ -35,20 +33,13 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        con = requireContext()
         //favoriteDb = FavoriteShared(con,"favorite_pref")
-        favoriteDb = FavoriteRoom(con)
-        retrofitConnect = RetrofitConnect()
-        return binding.root
-    }
-
-    override fun onResume() {
-        super.onResume()
+        favoriteDb = FavoriteRoom(requireContext())
 
         var gifs = mutableListOf<DataObject>()
         var favoriteList = mutableListOf<String>()
-        adapter = GifsAdapter(con,gifs,favoriteDb,favoriteList)
-        binding.gifView.layoutManager = LinearLayoutManager(con)
+        adapter = GifsAdapter(requireContext(),gifs,favoriteDb,favoriteList)
+        binding.gifView.layoutManager = LinearLayoutManager(requireContext())
         binding.gifView.adapter = adapter
 
         lifecycleScope.launch {
@@ -68,6 +59,9 @@ class HomeFragment : Fragment() {
                 stopProgressBarAnimation()
             }
         }
+
+        retrofitConnect = RetrofitConnect()
+        return binding.root
     }
 
     private fun stopProgressBarAnimation(){

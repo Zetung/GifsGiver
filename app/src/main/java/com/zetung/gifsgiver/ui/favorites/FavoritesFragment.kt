@@ -19,8 +19,6 @@ class FavoritesFragment : Fragment() {
     private var _binding: FragmentFavoritesBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var con: Context
-
     private lateinit var adapter: FavoriteAdapter
 
     private var favoritesList = mutableListOf<FavoritesModel>()
@@ -32,22 +30,18 @@ class FavoritesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentFavoritesBinding.inflate(inflater, container, false)
-        con = requireContext()
-        //favoriteDb = FavoriteShared(con,"favorite_pref")
-        favoriteDb = FavoriteRoom(con)
-        return binding.root
-    }
 
-    override fun onResume() {
-        super.onResume()
+        //favoriteDb = FavoriteShared(con,"favorite_pref")
+        favoriteDb = FavoriteRoom(requireContext())
 
         lifecycleScope.launch {
             favoritesList = favoriteDb.getAllFavorites()
-            adapter = FavoriteAdapter(con,favoritesList,favoriteDb)
-            binding.gifView.layoutManager = LinearLayoutManager(con)
+            adapter = FavoriteAdapter(requireContext(),favoritesList,favoriteDb)
+            binding.gifView.layoutManager = LinearLayoutManager(requireContext())
             binding.gifView.adapter = adapter
         }
 
+        return binding.root
     }
 
     override fun onDestroyView() {
