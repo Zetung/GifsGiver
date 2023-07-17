@@ -12,12 +12,20 @@ import com.bumptech.glide.Glide
 import com.zetung.gifsgiver.R
 import com.zetung.gifsgiver.repository.FavoriteDbApi
 import com.zetung.gifsgiver.repository.model.DataObject
+import com.zetung.gifsgiver.repository.model.FavoritesModel
+import com.zetung.gifsgiver.ui.OnLikeClickListener
 
 
 class GifsAdapter(private val context: Context,
                   var gifs: MutableList<DataObject>,
                   private val favoriteDb: FavoriteDbApi,
-                  private var favoriteList: MutableList<String>) : RecyclerView.Adapter<GifsAdapter.ViewHolder>(){
+                  var favoriteList: MutableList<FavoritesModel>) : RecyclerView.Adapter<GifsAdapter.ViewHolder>(){
+
+    private lateinit var likeClickListener: OnLikeClickListener
+
+    fun setOnButtonClickListener(listener: OnLikeClickListener) {
+        likeClickListener = listener
+    }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView = itemView.findViewById<ImageView>(R.id.ivGif)
@@ -41,13 +49,14 @@ class GifsAdapter(private val context: Context,
             Glide.with(context).load(data.images.gif.url).into(holder.imageView)
             holder.likeButton.isChecked = data.id in favoriteList
             holder.likeButton.setOnClickListener {
-                if(holder.likeButton.isChecked){
-                    favoriteDb.addToFavorite(data.id,data.images.gif.url)
-                    favoriteList.add(data.id)
-                } else {
-                    favoriteDb.deleteFromFavorite(data.id)
-                    favoriteList.remove(data.id)
-                }
+                likeClickListener.onLikeClick(holder.adapterPosition,data, holder.likeButton.isChecked)
+//                if(holder.likeButton.isChecked){
+//                    favoriteDb.addToFavorite(data.id,data.images.gif.url)
+//                    favoriteList.add(data.id)
+//                } else {
+//                    favoriteDb.deleteFromFavorite(data.id)
+//                    favoriteList.remove(data.id)
+//                }
             }
         }
     }

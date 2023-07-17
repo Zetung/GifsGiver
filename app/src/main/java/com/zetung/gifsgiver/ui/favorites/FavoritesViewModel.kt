@@ -19,7 +19,10 @@ class FavoritesViewModel (application: Application): AndroidViewModel(applicatio
             value = favoriteDb.getAllFavorites()
         }
     }
-
+    fun setLike(data: FavoritesModel){
+        favorites.value!!.add(data)
+        favoriteDb.addToFavorite(data.id,data.url)
+    }
     fun deleteLike(data: FavoritesModel){
         favorites.value!!.remove(data)
         favoriteDb.deleteFromFavorite(data.id)
