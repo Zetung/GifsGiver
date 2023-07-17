@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.ImageView
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.zetung.gifsgiver.R
@@ -15,7 +17,7 @@ import com.zetung.gifsgiver.repository.model.FavoritesModel
 
 class FavoriteAdapter(private val context: Context,
                       var gifs: MutableList<FavoritesModel>,
-                      private val favoriteDb: FavoriteDbApi
+                      //private val favoriteDb: FavoriteDbApi
 ) : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>(){
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -31,17 +33,30 @@ class FavoriteAdapter(private val context: Context,
     }
 
     override fun getItemCount(): Int {
-        return gifs.size
+        //return gifsLiveData.value?.size ?: 0
+        return  gifs.size
     }
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
+//        val gifs = gifsLiveData.value
+//        gifs?.get(position)?.let { data ->
+//            Glide.with(context).load(data.url).into(holder.imageView)
+//
+//            holder.likeButton.setOnClickListener {
+//                //favoriteDb.deleteFromFavorite(data.id)
+//                //gifs.remove(data)
+//                this.notifyItemRemoved(holder.adapterPosition)
+//            }
+//        }
+
         if(holder.adapterPosition != RecyclerView.NO_POSITION){
             val data = gifs[holder.adapterPosition]
             Glide.with(context).load(data.url).into(holder.imageView)
 
             holder.likeButton.setOnClickListener {
-                favoriteDb.deleteFromFavorite(data.id)
+                //favoriteDb.deleteFromFavorite(data.id)
                 gifs.remove(data)
                 this.notifyItemRemoved(holder.adapterPosition)
             }

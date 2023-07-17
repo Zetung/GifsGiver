@@ -42,6 +42,7 @@ class HomeFragment : Fragment() {
         binding.gifView.layoutManager = LinearLayoutManager(requireContext())
         binding.gifView.adapter = adapter
 
+        retrofitConnect = RetrofitConnect()
         lifecycleScope.launch {
             gifs = retrofitConnect.loadGif()
             adapter.setData(gifs)
@@ -60,7 +61,7 @@ class HomeFragment : Fragment() {
             }
         }
 
-        retrofitConnect = RetrofitConnect()
+
         return binding.root
     }
 
