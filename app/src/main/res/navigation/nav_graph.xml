@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.zetung.gifsgiver.HomeFragment"
+        android:name="com.zetung.gifsgiver.ui.home.HomeFragment"
         android:label="fragment_main"
         tools:layout="@layout/fragment_home" >
         <action
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/favoritesFragment"
-        android:name="com.zetung.gifsgiver.FavoritesFragment"
+        android:name="com.zetung.gifsgiver.ui.favorites.FavoritesFragment"
         android:label="fragment_favorites"
         tools:layout="@layout/fragment_favorites" >
         <action
