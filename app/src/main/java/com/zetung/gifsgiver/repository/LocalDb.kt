@@ -4,11 +4,11 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.zetung.gifsgiver.repository.model.FavoritesModel
+import com.zetung.gifsgiver.repository.model.GifModel
 
-@Database(entities = [FavoritesModel::class], version = 1)
+@Database(entities = [GifModel::class], version = 1)
 abstract class LocalDb: RoomDatabase() {
-    abstract fun getFavoritesDAO(): FavoritesDAO
+    abstract fun getFavoritesDAO(): GifDAO
     companion object{
         fun getDb(context: Context): LocalDb {
             return Room.databaseBuilder(

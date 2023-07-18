@@ -11,13 +11,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.zetung.gifsgiver.R
 import com.zetung.gifsgiver.repository.model.DataObject
-import com.zetung.gifsgiver.repository.model.FavoritesModel
+import com.zetung.gifsgiver.repository.model.GifModel
 import com.zetung.gifsgiver.ui.OnLikeClickListener
 
 
 class GifsAdapter(private val context: Context,
-                  var gifs: MutableList<DataObject>,
-                  var favoriteList: MutableList<FavoritesModel>) : RecyclerView.Adapter<GifsAdapter.ViewHolder>(){
+                  var gifs: MutableList<GifModel>) : RecyclerView.Adapter<GifsAdapter.ViewHolder>(){
 
     private lateinit var likeClickListener: OnLikeClickListener
 
@@ -44,17 +43,18 @@ class GifsAdapter(private val context: Context,
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if(holder.adapterPosition != RecyclerView.NO_POSITION){
             val data = gifs[holder.adapterPosition]
-            Glide.with(context).load(data.images.gif.url).into(holder.imageView)
+            holder.likeButton.isChecked = data.like
+            Glide.with(context).load(data.url).into(holder.imageView)
             holder.likeButton.setOnClickListener {
                 likeClickListener.onLikeClick(holder.adapterPosition,
-                    FavoritesModel(data.id,data.images.gif.url), holder.likeButton.isChecked)
+                    GifModel(data.id,data.url,true))
             }
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    fun setData(data: MutableList<DataObject>){
-        this.gifs = data
-        this.notifyDataSetChanged()
-    }
+//    @SuppressLint("NotifyDataSetChanged")
+//    fun setData(data: MutableList<DataObject>){
+//        this.gifs = data
+//        this.notifyDataSetChanged()
+//    }
 }

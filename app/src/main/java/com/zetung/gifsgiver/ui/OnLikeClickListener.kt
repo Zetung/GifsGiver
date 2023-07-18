@@ -1,7 +1,7 @@
 package com.zetung.gifsgiver.ui
 
-import com.zetung.gifsgiver.repository.model.FavoritesModel
+import com.zetung.gifsgiver.repository.model.GifModel
 
 interface OnLikeClickListener {
-    fun onLikeClick(position: Int,data: FavoritesModel, isLiked: Boolean)
+    fun onLikeClick(position: Int, data: GifModel)
 }

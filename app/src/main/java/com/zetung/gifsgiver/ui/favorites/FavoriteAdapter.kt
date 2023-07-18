@@ -10,11 +10,11 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.zetung.gifsgiver.R
-import com.zetung.gifsgiver.repository.model.FavoritesModel
+import com.zetung.gifsgiver.repository.model.GifModel
 import com.zetung.gifsgiver.ui.OnLikeClickListener
 
 class FavoriteAdapter(private val context: Context,
-                      var gifs: MutableList<FavoritesModel>,
+                      var gifs: MutableList<GifModel>,
 ) : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>(){
 
     private lateinit var likeClickListener: OnLikeClickListener
@@ -45,7 +45,7 @@ class FavoriteAdapter(private val context: Context,
             val data = gifs[holder.adapterPosition]
             Glide.with(context).load(data.url).into(holder.imageView)
             holder.likeButton.setOnClickListener {
-                likeClickListener.onLikeClick(holder.adapterPosition,data, true)
+                likeClickListener.onLikeClick(holder.adapterPosition,data)
             }
         }
     }

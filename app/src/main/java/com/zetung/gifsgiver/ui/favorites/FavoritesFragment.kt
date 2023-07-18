@@ -10,7 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.zetung.gifsgiver.databinding.FragmentFavoritesBinding
-import com.zetung.gifsgiver.repository.model.FavoritesModel
+import com.zetung.gifsgiver.repository.model.GifModel
 import com.zetung.gifsgiver.ui.OnLikeClickListener
 
 class FavoritesFragment : Fragment(), OnLikeClickListener {
@@ -32,7 +32,7 @@ class FavoritesFragment : Fragment(), OnLikeClickListener {
 
         favoritesViewModel = ViewModelProvider(this).get(FavoritesViewModel::class.java)
 
-        val favoritesObserver = Observer<List<FavoritesModel>> { favoritesList ->
+        val favoritesObserver = Observer<List<GifModel>> { favoritesList ->
             adapter.gifs = favoritesList.toMutableList()
             adapter.notifyDataSetChanged()
         }
@@ -46,8 +46,8 @@ class FavoritesFragment : Fragment(), OnLikeClickListener {
 
         return binding.root
     }
-    override fun onLikeClick(position: Int, data: FavoritesModel, isLiked: Boolean) {
-        if(isLiked) {
+    override fun onLikeClick(position: Int, data: GifModel) {
+        if(data.like) {
             favoritesViewModel.deleteLike(data)
             adapter.gifs.remove(data)
             adapter.notifyItemRemoved(position)
