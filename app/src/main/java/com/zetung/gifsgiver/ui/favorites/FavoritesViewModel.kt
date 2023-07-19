@@ -19,12 +19,14 @@ class FavoritesViewModel (application: Application): AndroidViewModel(applicatio
     val favorites = MutableLiveData<MutableList<GifModel>>().apply {
         CoroutineScope(Dispatchers.Main).launch{
             value = gifsGiverApi.getAllFavorites(dbApi)
+            //value = dbApi.getAllFavorites()
         }
     }
 
     fun deleteLike(data: GifModel){
         favorites.value!!.remove(data)
         gifsGiverApi.deleteFromFavorite(data.id,dbApi)
+        //dbApi.deleteFromFavorite(data.id)
     }
 
 }

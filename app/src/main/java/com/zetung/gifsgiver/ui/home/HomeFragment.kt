@@ -14,6 +14,7 @@ import com.zetung.gifsgiver.repository.model.DataObject
 import com.zetung.gifsgiver.repository.model.GifModel
 import com.zetung.gifsgiver.ui.OnLikeClickListener
 import com.zetung.gifsgiver.ui.favorites.FavoritesViewModel
+import com.zetung.gifsgiver.util.LoadState
 
 class HomeFragment : Fragment(), OnLikeClickListener {
 
@@ -37,6 +38,13 @@ class HomeFragment : Fragment(), OnLikeClickListener {
             adapter.notifyDataSetChanged()
         }
         homeViewModel.gifs.observe(viewLifecycleOwner, gifsObserver)
+        val loadObserver = Observer<LoadState> { state->
+            if (state is LoadState.Done){
+                homeViewModel.loadState.value = LoadState.NotStarted()
+                stopProgressBarAnimation()
+            }
+        }
+        homeViewModel.loadState.observe(viewLifecycleOwner, loadObserver)
 
         adapter = GifsAdapter(requireContext(),
             homeViewModel.gifs.value.orEmpty().toMutableList())
@@ -46,7 +54,6 @@ class HomeFragment : Fragment(), OnLikeClickListener {
 
         binding.swipeRefresh.setOnRefreshListener {
             homeViewModel.loadGif()
-            stopProgressBarAnimation()
         }
 
 
@@ -54,7 +61,7 @@ class HomeFragment : Fragment(), OnLikeClickListener {
     }
 
     override fun onLikeClick(position: Int, data: GifModel) {
-        if(!data.like) {
+        if(data.like) {
             homeViewModel.deleteLike(data.id)
             adapter.gifs.remove(data)
         } else {

@@ -46,8 +46,7 @@ class GifsAdapter(private val context: Context,
             holder.likeButton.isChecked = data.like
             Glide.with(context).load(data.url).into(holder.imageView)
             holder.likeButton.setOnClickListener {
-                likeClickListener.onLikeClick(holder.adapterPosition,
-                    GifModel(data.id,data.url,true))
+                likeClickListener.onLikeClick(holder.adapterPosition, data)
             }
         }
     }

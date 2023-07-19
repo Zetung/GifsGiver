@@ -7,6 +7,7 @@ import com.zetung.gifsgiver.repository.implementation.GifRoom
 import com.zetung.gifsgiver.repository.model.GifModel
 import com.zetung.gifsgiver.util.GifsGiverApi
 import com.zetung.gifsgiver.util.GifsGiverImpl
+import com.zetung.gifsgiver.util.LoadState
 import com.zetung.gifsgiver.util.RetrofitConnect
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,8 +17,12 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel (application: Application): AndroidViewModel(application) {
 
-    private val gifsGiverApi: GifsGiverApi = GifsGiverImpl()
+    private val gifsGiverApi = GifsGiverImpl()
     private val dbApi = GifRoom(application)
+
+    var loadState = MutableLiveData<LoadState>().apply {
+        value = gifsGiverApi.loadState
+    }
 
     var gifs = MutableLiveData<MutableList<GifModel>>().apply {
         CoroutineScope(Dispatchers.Main).launch {

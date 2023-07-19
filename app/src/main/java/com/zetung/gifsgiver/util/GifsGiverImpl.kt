@@ -16,6 +16,7 @@ class GifsGiverImpl : GifsGiverApi {
 
     private var internetState: LoadState = LoadState.NotStarted()
     private var localState: LoadState = LoadState.NotStarted()
+    var loadState: LoadState = LoadState.NotStarted()
     private fun fetchDataFromInternet(connectorApi: ConnectionApi):
             Flow<MutableList<DataObject>> = flow {
         internetState = LoadState.Loading()
@@ -33,6 +34,7 @@ class GifsGiverImpl : GifsGiverApi {
 
     private fun fetchDataCombined(connectorApi: ConnectionApi, gifDbApi: GifDbApi):
             Flow<MutableList<GifModel>> = flow {
+        loadState = LoadState.Loading()
         val deferredInternet = CoroutineScope(Dispatchers.Main).async { fetchDataFromInternet(connectorApi) }
         val deferredDatabase = CoroutineScope(Dispatchers.Main).async { fetchDataFromDatabase(gifDbApi) }
 
@@ -45,6 +47,11 @@ class GifsGiverImpl : GifsGiverApi {
                 allGifs.add(GifModel(record.id,record.images.gif.url,true))
             else
                 allGifs.add(GifModel(record.id,record.images.gif.url,false))
+
+        loadState = if(localState is LoadState.Done && internetState is LoadState.Done)
+            LoadState.Done()
+        else
+            LoadState.Error()
         emit(allGifs)
     }
 
