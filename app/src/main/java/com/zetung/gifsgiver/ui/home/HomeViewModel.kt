@@ -33,6 +33,12 @@ class HomeViewModel (application: Application): AndroidViewModel(application) {
         }
     }
 
+    fun getAllLocalGifs(){
+        CoroutineScope(Dispatchers.Main).launch {
+            gifs.value = gifsGiverApi.getAllLocalGifs()
+        }
+    }
+
     fun setLike(id:String,url:String){
         gifsGiverApi.addToFavorite(id,url)
     }

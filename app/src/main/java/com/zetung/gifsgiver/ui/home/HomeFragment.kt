@@ -33,7 +33,7 @@ class HomeFragment : Fragment(), OnLikeClickListener {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
-        homeViewModel.loadGif()
+        homeViewModel.getAllLocalGifs()
         val gifsObserver = Observer<MutableList<GifModel>> { gifsList ->
             adapter.gifs = gifsList.toMutableList()
             stopProgressBarAnimation()

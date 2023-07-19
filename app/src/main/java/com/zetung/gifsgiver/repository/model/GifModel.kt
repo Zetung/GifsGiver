@@ -11,5 +11,5 @@ data class GifModel(
     @ColumnInfo(name = "url")
     val url: String,
     @ColumnInfo(name = "like")
-    val like: Boolean
+    var like: Boolean
 )

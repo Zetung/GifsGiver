@@ -73,4 +73,12 @@ class GifsGiverImpl(gifDbApi: GifDbApi) : GifsGiverApi {
     override suspend fun getAllFavorites(): MutableList<GifModel> {
         return gifDbApi.getAllFavorites()
     }
+
+    override suspend fun getAllLocalGifs():MutableList<GifModel>{
+        val deferredDatabase = CoroutineScope(Dispatchers.Main).async { fetchDataFromDatabase() }
+        val fromDatabase = deferredDatabase.await()
+        for(record in allGifs)
+            allGifs[allGifs.indexOf(record)].like = record.id in fromDatabase.last()
+        return allGifs
+    }
 }
