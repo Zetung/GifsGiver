@@ -1,6 +1,8 @@
 package com.zetung.gifsgiver.ui.home
 
 import android.annotation.SuppressLint
+import android.app.Application
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,10 +12,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.zetung.gifsgiver.databinding.FragmentHomeBinding
+import com.zetung.gifsgiver.repository.implementation.GifRoom
 import com.zetung.gifsgiver.repository.model.DataObject
 import com.zetung.gifsgiver.repository.model.GifModel
 import com.zetung.gifsgiver.ui.OnLikeClickListener
 import com.zetung.gifsgiver.ui.favorites.FavoritesViewModel
+import com.zetung.gifsgiver.util.GifsGiverImpl
 import com.zetung.gifsgiver.util.LoadState
 
 class HomeFragment : Fragment(), OnLikeClickListener {
@@ -32,7 +36,10 @@ class HomeFragment : Fragment(), OnLikeClickListener {
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+        homeViewModel = ViewModelProvider(this,HomeFactory(
+            requireActivity().application,
+            GifsGiverImpl(GifRoom(requireContext()))
+        )).get(HomeViewModel::class.java)
         homeViewModel.getAllLocalGifs()
         val gifsObserver = Observer<MutableList<GifModel>> { gifsList ->
             adapter.gifs = gifsList.toMutableList()

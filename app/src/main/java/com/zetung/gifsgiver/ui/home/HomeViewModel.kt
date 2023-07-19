@@ -15,9 +15,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
 
-class HomeViewModel (application: Application): AndroidViewModel(application) {
+class HomeViewModel (application: Application, private val gifsGiverApi: GifsGiverApi): AndroidViewModel(application) {
 
-    private val gifsGiverApi = GifsGiverImpl(GifRoom(application))
 
     var loadState = MutableLiveData<LoadState>().apply {
         value = LoadState.NotStarted()

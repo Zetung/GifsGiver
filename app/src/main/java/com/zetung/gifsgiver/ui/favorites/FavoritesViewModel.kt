@@ -11,14 +11,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class FavoritesViewModel (application: Application): AndroidViewModel(application) {
+class FavoritesViewModel (application: Application,private val gifsGiverApi: GifsGiverApi): AndroidViewModel(application) {
 
-    private val gifsGiverApi: GifsGiverApi = GifsGiverImpl(GifRoom(application))
 
     var favorites = MutableLiveData<MutableList<GifModel>>().apply {
         CoroutineScope(Dispatchers.Main).launch{
             value = gifsGiverApi.getAllFavorites()
-            //value = dbApi.getAllFavorites()
         }
     }
 
@@ -31,7 +29,6 @@ class FavoritesViewModel (application: Application): AndroidViewModel(applicatio
     fun deleteLike(data: GifModel){
         favorites.value!!.remove(data)
         gifsGiverApi.deleteFromFavorite(data.id)
-        //dbApi.deleteFromFavorite(data.id)
     }
 
 }
