@@ -36,7 +36,6 @@ class HomeFragment : Fragment(), OnLikeClickListener {
         homeViewModel.getAllLocalGifs()
         val gifsObserver = Observer<MutableList<GifModel>> { gifsList ->
             adapter.gifs = gifsList.toMutableList()
-            stopProgressBarAnimation()
             adapter.notifyDataSetChanged()
         }
         homeViewModel.gifs.observe(viewLifecycleOwner, gifsObserver)

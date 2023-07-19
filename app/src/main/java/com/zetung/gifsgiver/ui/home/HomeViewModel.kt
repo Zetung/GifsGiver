@@ -29,7 +29,9 @@ class HomeViewModel (application: Application): AndroidViewModel(application) {
 
     fun loadGif(){
         CoroutineScope(Dispatchers.Main).launch {
+            loadState.value = LoadState.Loading()
             gifs.value = gifsGiverApi.loadGifs(RetrofitConnect()).last()
+            loadState.value = LoadState.Done()
         }
     }
 
