@@ -33,8 +33,10 @@ class HomeFragment : Fragment(), OnLikeClickListener {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+        homeViewModel.loadGif()
         val gifsObserver = Observer<MutableList<GifModel>> { gifsList ->
             adapter.gifs = gifsList.toMutableList()
+            stopProgressBarAnimation()
             adapter.notifyDataSetChanged()
         }
         homeViewModel.gifs.observe(viewLifecycleOwner, gifsObserver)
@@ -55,7 +57,6 @@ class HomeFragment : Fragment(), OnLikeClickListener {
         binding.swipeRefresh.setOnRefreshListener {
             homeViewModel.loadGif()
         }
-
 
         return binding.root
     }

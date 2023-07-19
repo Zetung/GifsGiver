@@ -31,12 +31,12 @@ class FavoritesFragment : Fragment(), OnLikeClickListener {
         _binding = FragmentFavoritesBinding.inflate(inflater, container, false)
 
         favoritesViewModel = ViewModelProvider(this).get(FavoritesViewModel::class.java)
+        favoritesViewModel.loadFavorites()
 
         val favoritesObserver = Observer<List<GifModel>> { favoritesList ->
             adapter.gifs = favoritesList.toMutableList()
             adapter.notifyDataSetChanged()
         }
-
         favoritesViewModel.favorites.observe(viewLifecycleOwner, favoritesObserver)
 
         adapter = FavoriteAdapter(requireContext(), favoritesViewModel.favorites.value.orEmpty().toMutableList())

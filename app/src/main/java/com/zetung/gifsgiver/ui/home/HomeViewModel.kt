@@ -17,30 +17,27 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel (application: Application): AndroidViewModel(application) {
 
-    private val gifsGiverApi = GifsGiverImpl()
-    private val dbApi = GifRoom(application)
+    private val gifsGiverApi = GifsGiverImpl(GifRoom(application))
 
     var loadState = MutableLiveData<LoadState>().apply {
-        value = gifsGiverApi.loadState
+        value = LoadState.NotStarted()
     }
 
     var gifs = MutableLiveData<MutableList<GifModel>>().apply {
-        CoroutineScope(Dispatchers.Main).launch {
-            value = gifsGiverApi.loadGifs(RetrofitConnect(),dbApi).last()
-        }
+        loadGif()
     }
 
     fun loadGif(){
         CoroutineScope(Dispatchers.Main).launch {
-            gifs.value = gifsGiverApi.loadGifs(RetrofitConnect(),dbApi).last()
+            gifs.value = gifsGiverApi.loadGifs(RetrofitConnect()).last()
         }
     }
 
     fun setLike(id:String,url:String){
-        gifsGiverApi.addToFavorite(id,url,dbApi)
+        gifsGiverApi.addToFavorite(id,url)
     }
 
     fun deleteLike(id:String){
-        gifsGiverApi.deleteFromFavorite(id,GifRoom(getApplication()))
+        gifsGiverApi.deleteFromFavorite(id)
     }
 }
