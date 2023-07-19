@@ -47,8 +47,7 @@ class HomeFragment : Fragment(), OnLikeClickListener {
         }
         homeViewModel.loadState.observe(viewLifecycleOwner, loadObserver)
 
-        adapter = GifsAdapter(requireContext(),
-            homeViewModel.gifs.value.orEmpty().toMutableList())
+        adapter = GifsAdapter(homeViewModel.gifs.value.orEmpty().toMutableList())
         adapter.setOnButtonClickListener(this)
         binding.gifView.layoutManager = LinearLayoutManager(requireContext())
         binding.gifView.adapter = adapter

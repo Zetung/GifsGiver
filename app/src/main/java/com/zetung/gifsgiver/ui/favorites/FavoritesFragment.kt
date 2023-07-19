@@ -39,7 +39,7 @@ class FavoritesFragment : Fragment(), OnLikeClickListener {
         }
         favoritesViewModel.favorites.observe(viewLifecycleOwner, favoritesObserver)
 
-        adapter = FavoriteAdapter(requireContext(), favoritesViewModel.favorites.value.orEmpty().toMutableList())
+        adapter = FavoriteAdapter(favoritesViewModel.favorites.value.orEmpty().toMutableList())
         adapter.setOnButtonClickListener(this)
         binding.gifView.layoutManager = LinearLayoutManager(requireContext())
         binding.gifView.adapter = adapter

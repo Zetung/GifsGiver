@@ -3,19 +3,15 @@ package com.zetung.gifsgiver.ui.favorites
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
-import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.zetung.gifsgiver.R
 import com.zetung.gifsgiver.repository.model.GifModel
 import com.zetung.gifsgiver.ui.OnLikeClickListener
 
-class FavoriteAdapter(private val context: Context,
-                      var gifs: MutableList<GifModel>,
-) : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>(){
+class FavoriteAdapter(var gifs: MutableList<GifModel>) :
+    RecyclerView.Adapter<FavoriteHolder.FavoriteHolder>(){
 
     private lateinit var likeClickListener: OnLikeClickListener
 
@@ -23,16 +19,11 @@ class FavoriteAdapter(private val context: Context,
         likeClickListener = listener
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val imageView = itemView.findViewById<ImageView>(R.id.ivGif)
-        val likeButton = itemView.findViewById<CheckBox>(R.id.likeButton)
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteHolder.FavoriteHolder {
         val itemView =
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.favorite_item, parent, false)
-        return ViewHolder(itemView)
+        return FavoriteHolder.FavoriteHolder(itemView)
     }
 
     override fun getItemCount(): Int {
@@ -40,13 +31,10 @@ class FavoriteAdapter(private val context: Context,
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        if(holder.adapterPosition != RecyclerView.NO_POSITION){
-            val data = gifs[holder.adapterPosition]
-            Glide.with(context).load(data.url).into(holder.imageView)
-            holder.likeButton.setOnClickListener {
-                likeClickListener.onLikeClick(holder.adapterPosition,data)
-            }
+    override fun onBindViewHolder(favHolder: FavoriteHolder.FavoriteHolder, position: Int) {
+        if(favHolder.adapterPosition != RecyclerView.NO_POSITION){
+            val data = gifs[favHolder.adapterPosition]
+            favHolder.bind(data,likeClickListener)
         }
     }
 
