@@ -11,26 +11,28 @@ import com.zetung.gifsgiver.util.RetrofitConnect
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
 
 class HomeViewModel (application: Application): AndroidViewModel(application) {
 
     private val gifsGiverApi: GifsGiverApi = GifsGiverImpl()
+    private val dbApi = GifRoom(application)
 
     var gifs = MutableLiveData<MutableList<GifModel>>().apply {
         CoroutineScope(Dispatchers.Main).launch {
-            value = gifsGiverApi.loadGifs(RetrofitConnect(),GifRoom(application)).first()
+            value = gifsGiverApi.loadGifs(RetrofitConnect(),dbApi).last()
         }
     }
 
     fun loadGif(){
         CoroutineScope(Dispatchers.Main).launch {
-            gifs.value = gifsGiverApi.loadGifs(RetrofitConnect(),GifRoom(getApplication())).first()
+            gifs.value = gifsGiverApi.loadGifs(RetrofitConnect(),dbApi).last()
         }
     }
 
     fun setLike(id:String,url:String){
-        gifsGiverApi.addToFavorite(id,url,GifRoom(getApplication()))
+        gifsGiverApi.addToFavorite(id,url,dbApi)
     }
 
     fun deleteLike(id:String){

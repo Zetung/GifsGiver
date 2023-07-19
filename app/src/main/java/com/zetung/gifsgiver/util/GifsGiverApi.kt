@@ -8,5 +8,5 @@ interface GifsGiverApi {
     fun loadGifs(connectorApi: ConnectionApi, gifDbApi: GifDbApi): Flow<MutableList<GifModel>>
     fun addToFavorite(id:String,url:String,gifDbApi: GifDbApi)
     fun deleteFromFavorite(id:String,gifDbApi: GifDbApi)
-    fun getAllFavorites(gifDbApi: GifDbApi):MutableList<GifModel>
+    suspend fun getAllFavorites(gifDbApi: GifDbApi):MutableList<GifModel>
 }

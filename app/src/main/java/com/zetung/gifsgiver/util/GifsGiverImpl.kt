@@ -9,6 +9,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
 
 class GifsGiverImpl : GifsGiverApi {
@@ -39,8 +40,8 @@ class GifsGiverImpl : GifsGiverApi {
         val fromDatabase = deferredDatabase.await()
 
         val allGifs = mutableListOf<GifModel>()
-        for(record in fromInternet.first())
-            if(record.id in fromDatabase.first())
+        for(record in fromInternet.last())
+            if(record.id in fromDatabase.last())
                 allGifs.add(GifModel(record.id,record.images.gif.url,true))
             else
                 allGifs.add(GifModel(record.id,record.images.gif.url,false))
@@ -60,10 +61,7 @@ class GifsGiverImpl : GifsGiverApi {
         gifDbApi.deleteFromFavorite(id)
     }
 
-    override fun getAllFavorites(gifDbApi: GifDbApi): MutableList<GifModel> {
-        CoroutineScope(Dispatchers.Main).launch {
-             gifDbApi.getAllFavorites()
-        }
-        return mutableListOf()
+    override suspend fun getAllFavorites(gifDbApi: GifDbApi): MutableList<GifModel> {
+        return gifDbApi.getAllFavorites()
     }
 }
