@@ -20,6 +20,7 @@
         />
     <CheckBox
         android:id="@+id/likeButton"
+        android:checked="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_width="0dp"
