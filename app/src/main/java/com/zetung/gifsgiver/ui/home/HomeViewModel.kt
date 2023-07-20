@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import com.zetung.gifsgiver.repository.model.GifModel
 import com.zetung.gifsgiver.util.GifsGiverApi
 import com.zetung.gifsgiver.util.LoadState
-import com.zetung.gifsgiver.util.RetrofitConnect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

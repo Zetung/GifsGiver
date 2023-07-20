@@ -17,10 +17,6 @@ class GifsGiverImpl @Inject constructor (connectorApi: ConnectionApi, gifDbApi: 
     private val gifDbApi : GifDbApi
     private var allGifs = mutableListOf<GifModel>()
 
-    private var internetState: LoadState = LoadState.NotStarted()
-    private var localState: LoadState = LoadState.NotStarted()
-    var loadState: LoadState = LoadState.NotStarted()
-
     init {
         this.gifDbApi = gifDbApi
         this.connectorApi = connectorApi
@@ -28,16 +24,12 @@ class GifsGiverImpl @Inject constructor (connectorApi: ConnectionApi, gifDbApi: 
 
     private fun fetchDataFromInternet():
             Flow<MutableList<DataObject>> = flow {
-        internetState = LoadState.Loading()
         val internetGifs = connectorApi.loadGif()
-        internetState = LoadState.Done()
         emit(internetGifs)
     }
 
     private fun fetchDataFromDatabase(): Flow<List<String>> = flow {
-        localState = LoadState.Loading()
         val localGifs = gifDbApi.getAllFavoritesID()
-        localState = LoadState.Done()
         emit(localGifs)
     }
 
