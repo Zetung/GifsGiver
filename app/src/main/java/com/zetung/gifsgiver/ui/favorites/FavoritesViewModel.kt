@@ -3,6 +3,7 @@ package com.zetung.gifsgiver.ui.favorites
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.zetung.gifsgiver.repository.implementation.GifRoom
 import com.zetung.gifsgiver.repository.model.GifModel
 import com.zetung.gifsgiver.util.GifsGiverApi
@@ -11,7 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class FavoritesViewModel (application: Application,private val gifsGiverApi: GifsGiverApi): AndroidViewModel(application) {
+class FavoritesViewModel (private val gifsGiverApi: GifsGiverApi): ViewModel() {
 
 
     var favorites = MutableLiveData<MutableList<GifModel>>().apply {

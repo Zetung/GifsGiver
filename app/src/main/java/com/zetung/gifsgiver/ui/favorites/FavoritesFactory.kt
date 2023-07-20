@@ -6,9 +6,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.zetung.gifsgiver.ui.home.HomeViewModel
 import com.zetung.gifsgiver.util.GifsGiverApi
 
-class FavoritesFactory(val application: Application, val giverApi: GifsGiverApi):
+class FavoritesFactory(application: Application, val giverApi: GifsGiverApi):
     ViewModelProvider.AndroidViewModelFactory(application){
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return FavoritesViewModel(application,giverApi) as T
+        return FavoritesViewModel(giverApi) as T
     }
 }

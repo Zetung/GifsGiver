@@ -3,6 +3,7 @@ package com.zetung.gifsgiver.ui.home
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.zetung.gifsgiver.repository.implementation.GifRoom
 import com.zetung.gifsgiver.repository.model.GifModel
 import com.zetung.gifsgiver.util.GifsGiverApi
@@ -15,7 +16,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
 
-class HomeViewModel (application: Application, private val gifsGiverApi: GifsGiverApi): AndroidViewModel(application) {
+class HomeViewModel (private val gifsGiverApi: GifsGiverApi): ViewModel() {
 
 
     var loadState = MutableLiveData<LoadState>().apply {
