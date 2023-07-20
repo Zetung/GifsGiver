@@ -4,8 +4,9 @@ import com.zetung.gifsgiver.repository.model.DataObject
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Inject
 
-class RetrofitConnect: ConnectionApi {
+class RetrofitConnect @Inject constructor() : ConnectionApi {
     private val BASE_URL = "https://api.giphy.com/v1/"
     private var gifApi: GifApi
 

@@ -3,8 +3,10 @@ package com.zetung.gifsgiver.util.di
 import android.content.Context
 import com.zetung.gifsgiver.repository.GifDbApi
 import com.zetung.gifsgiver.repository.implementation.GifRoom
+import com.zetung.gifsgiver.util.ConnectionApi
 import com.zetung.gifsgiver.util.GifsGiverApi
 import com.zetung.gifsgiver.util.GifsGiverImpl
+import com.zetung.gifsgiver.util.RetrofitConnect
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,12 +19,12 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 object ViewModelModule {
 
     @Provides
-    fun provideGifsGiverApi (gifDbApi: GifDbApi):GifsGiverApi{
-        return GifsGiverImpl(gifDbApi)
+    fun provideGifsGiverApi (connectionApi: ConnectionApi, gifDbApi: GifDbApi):GifsGiverApi{
+        return GifsGiverImpl(connectionApi, gifDbApi)
     }
 
     @Provides
-    fun toGifDbImpl(gifDbImpl: GifRoom): GifDbApi{
+    fun provideGifDbImpl(gifDbImpl: GifRoom): GifDbApi{
         return gifDbImpl
     }
 
@@ -31,12 +33,9 @@ object ViewModelModule {
         return GifRoom(context)
     }
 
-//    @Binds
-//    abstract fun bindGifsGiverApi (impl: GifsGiverImpl):GifsGiverApi
-//
-//    @Binds
-//    abstract fun bindGifDbApi(impl: GifRoom):GifDbApi
-
-
+    @Provides
+    fun provideConnectorImpl (retrofitConnect: RetrofitConnect): ConnectionApi{
+        return retrofitConnect
+    }
 
 }

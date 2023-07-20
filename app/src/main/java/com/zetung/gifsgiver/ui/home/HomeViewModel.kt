@@ -28,7 +28,7 @@ class HomeViewModel @Inject constructor (private val gifsGiverApi: GifsGiverApi)
     fun loadGif(){
         CoroutineScope(Dispatchers.Main).launch {
             loadState.value = LoadState.Loading()
-            gifs.value = gifsGiverApi.loadGifs(RetrofitConnect()).last()
+            gifs.value = gifsGiverApi.loadGifs().last()
             loadState.value = LoadState.Done()
         }
     }

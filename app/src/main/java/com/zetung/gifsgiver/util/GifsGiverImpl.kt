@@ -11,8 +11,9 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.last
 import javax.inject.Inject
 
-class GifsGiverImpl @Inject constructor (gifDbApi: GifDbApi) : GifsGiverApi {
+class GifsGiverImpl @Inject constructor (connectorApi: ConnectionApi, gifDbApi: GifDbApi) : GifsGiverApi {
 
+    private val connectorApi : ConnectionApi
     private val gifDbApi : GifDbApi
     private var allGifs = mutableListOf<GifModel>()
 
@@ -22,9 +23,10 @@ class GifsGiverImpl @Inject constructor (gifDbApi: GifDbApi) : GifsGiverApi {
 
     init {
         this.gifDbApi = gifDbApi
+        this.connectorApi = connectorApi
     }
 
-    private fun fetchDataFromInternet(connectorApi: ConnectionApi):
+    private fun fetchDataFromInternet():
             Flow<MutableList<DataObject>> = flow {
         internetState = LoadState.Loading()
         val internetGifs = connectorApi.loadGif()
@@ -39,9 +41,9 @@ class GifsGiverImpl @Inject constructor (gifDbApi: GifDbApi) : GifsGiverApi {
         emit(localGifs)
     }
 
-    private fun fetchDataCombined(connectorApi: ConnectionApi):
+    private fun fetchDataCombined():
             Flow<MutableList<GifModel>> = flow {
-        val deferredInternet = CoroutineScope(Dispatchers.Main).async { fetchDataFromInternet(connectorApi) }
+        val deferredInternet = CoroutineScope(Dispatchers.Main).async { fetchDataFromInternet() }
         val deferredDatabase = CoroutineScope(Dispatchers.Main).async { fetchDataFromDatabase() }
 
         val fromInternet = deferredInternet.await()
@@ -59,8 +61,8 @@ class GifsGiverImpl @Inject constructor (gifDbApi: GifDbApi) : GifsGiverApi {
     }
 
 
-    override fun loadGifs(connectorApi: ConnectionApi): Flow<MutableList<GifModel>> {
-        return fetchDataCombined(connectorApi)
+    override fun loadGifs(): Flow<MutableList<GifModel>> {
+        return fetchDataCombined()
     }
 
     override fun addToFavorite(id: String, url:String) {
