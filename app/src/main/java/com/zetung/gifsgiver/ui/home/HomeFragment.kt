@@ -23,7 +23,7 @@ class HomeFragment : Fragment(), OnLikeClickListener {
 
     private lateinit var adapter: GifsAdapter
 
-    val homeViewModel: HomeViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(
@@ -32,10 +32,6 @@ class HomeFragment : Fragment(), OnLikeClickListener {
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-//        homeViewModel = ViewModelProvider(this,HomeFactory(
-//            requireActivity().application,
-//            GifsGiverImpl(GifRoom(requireContext()))
-//        )).get(HomeViewModel::class.java)
         homeViewModel.getAllLocalGifs()
         val gifsObserver = Observer<MutableList<GifModel>> { gifsList ->
             adapter.gifs = gifsList.toMutableList()

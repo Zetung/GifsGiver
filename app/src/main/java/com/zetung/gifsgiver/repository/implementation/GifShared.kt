@@ -5,11 +5,11 @@ import android.content.SharedPreferences
 import com.zetung.gifsgiver.repository.GifDbApi
 import com.zetung.gifsgiver.repository.model.GifModel
 
-class GifShared(context: Context, nameShared: String) : GifDbApi {
+class GifShared  (context: Context) : GifDbApi {
     private val sharedPreferences : SharedPreferences
 
     init {
-        sharedPreferences = context.getSharedPreferences(nameShared,Context.MODE_PRIVATE)
+        sharedPreferences = context.getSharedPreferences("gifs",Context.MODE_PRIVATE)
     }
 
     override fun addToFavorite(id: String, url: String) {
