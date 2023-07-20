@@ -1,22 +1,20 @@
 package com.zetung.gifsgiver.ui.home
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.zetung.gifsgiver.repository.implementation.GifRoom
 import com.zetung.gifsgiver.repository.model.GifModel
 import com.zetung.gifsgiver.util.GifsGiverApi
-import com.zetung.gifsgiver.util.GifsGiverImpl
 import com.zetung.gifsgiver.util.LoadState
 import com.zetung.gifsgiver.util.RetrofitConnect
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class HomeViewModel (private val gifsGiverApi: GifsGiverApi): ViewModel() {
+@HiltViewModel
+class HomeViewModel @Inject constructor (private val gifsGiverApi: GifsGiverApi): ViewModel() {
 
 
     var loadState = MutableLiveData<LoadState>().apply {

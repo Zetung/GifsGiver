@@ -1,25 +1,21 @@
 package com.zetung.gifsgiver.ui.home
 
 import android.annotation.SuppressLint
-import android.app.Application
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.zetung.gifsgiver.databinding.FragmentHomeBinding
-import com.zetung.gifsgiver.repository.implementation.GifRoom
-import com.zetung.gifsgiver.repository.model.DataObject
 import com.zetung.gifsgiver.repository.model.GifModel
 import com.zetung.gifsgiver.ui.OnLikeClickListener
-import com.zetung.gifsgiver.ui.favorites.FavoritesViewModel
-import com.zetung.gifsgiver.util.GifsGiverImpl
 import com.zetung.gifsgiver.util.LoadState
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeFragment : Fragment(), OnLikeClickListener {
 
     private var _binding: FragmentHomeBinding? = null
@@ -27,7 +23,7 @@ class HomeFragment : Fragment(), OnLikeClickListener {
 
     private lateinit var adapter: GifsAdapter
 
-    private lateinit var homeViewModel: HomeViewModel
+    val homeViewModel: HomeViewModel by viewModels()
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(
@@ -36,10 +32,10 @@ class HomeFragment : Fragment(), OnLikeClickListener {
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        homeViewModel = ViewModelProvider(this,HomeFactory(
-            requireActivity().application,
-            GifsGiverImpl(GifRoom(requireContext()))
-        )).get(HomeViewModel::class.java)
+//        homeViewModel = ViewModelProvider(this,HomeFactory(
+//            requireActivity().application,
+//            GifsGiverImpl(GifRoom(requireContext()))
+//        )).get(HomeViewModel::class.java)
         homeViewModel.getAllLocalGifs()
         val gifsObserver = Observer<MutableList<GifModel>> { gifsList ->
             adapter.gifs = gifsList.toMutableList()

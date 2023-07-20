@@ -1,6 +1,5 @@
 package com.zetung.gifsgiver.util
 
-import com.zetung.gifsgiver.repository.GifDbApi
 import com.zetung.gifsgiver.repository.model.GifModel
 import kotlinx.coroutines.flow.Flow
 

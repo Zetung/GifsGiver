@@ -9,8 +9,9 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.last
+import javax.inject.Inject
 
-class GifsGiverImpl(gifDbApi: GifDbApi) : GifsGiverApi {
+class GifsGiverImpl @Inject constructor (gifDbApi: GifDbApi) : GifsGiverApi {
 
     private val gifDbApi : GifDbApi
     private var allGifs = mutableListOf<GifModel>()

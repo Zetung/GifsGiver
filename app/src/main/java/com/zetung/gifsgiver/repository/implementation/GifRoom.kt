@@ -7,8 +7,9 @@ import com.zetung.gifsgiver.repository.model.GifModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class GifRoom (private val context:Context): GifDbApi {
+class GifRoom @Inject constructor (private val context:Context): GifDbApi {
     override fun addToFavorite(id: String, url: String) {
         CoroutineScope(Dispatchers.IO).launch {
             LocalDb.getDb(context).getFavoritesDAO().addToFavorite(GifModel(id,url,true))

@@ -1,11 +1,9 @@
 package com.zetung.gifsgiver.ui.favorites
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.zetung.gifsgiver.R
 import com.zetung.gifsgiver.repository.model.GifModel
 import com.zetung.gifsgiver.ui.OnLikeClickListener
