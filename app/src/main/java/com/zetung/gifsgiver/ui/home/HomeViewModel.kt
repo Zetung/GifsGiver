@@ -2,9 +2,11 @@ package com.zetung.gifsgiver.ui.home
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.zetung.gifsgiver.repository.model.AllGifs
 import com.zetung.gifsgiver.repository.model.GifModel
 import com.zetung.gifsgiver.util.GifsGiverApi
 import com.zetung.gifsgiver.util.LoadState
+import com.zetung.gifsgiver.util.di.GifsSingleton
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor (private val gifsGiverApi: GifsGiverApi): ViewModel() {
 
-
+    @Inject
+    lateinit var gifsSingleton: GifsSingleton
     var loadState = MutableLiveData<LoadState>().apply {
         value = LoadState.NotStarted()
     }
@@ -33,16 +36,16 @@ class HomeViewModel @Inject constructor (private val gifsGiverApi: GifsGiverApi)
     }
 
     fun getAllLocalGifs(){
-        CoroutineScope(Dispatchers.Main).launch {
-            gifs.value = gifsGiverApi.getAllLocalGifs()
-        }
+        gifs.value = gifsSingleton.allGifs
     }
 
-    fun setLike(id:String,url:String){
-        gifsGiverApi.addToFavorite(id,url)
+    fun setLike(gifModel: GifModel){
+        gifsGiverApi.addToFavorite(gifModel.id,gifModel.url)
+        gifsSingleton.allGifs.add(gifModel)
     }
 
-    fun deleteLike(id:String){
-        gifsGiverApi.deleteFromFavorite(id)
+    fun deleteLike(gifModel: GifModel){
+        gifsGiverApi.deleteFromFavorite(gifModel.id)
+        gifsSingleton.allGifs.remove(gifModel)
     }
 }

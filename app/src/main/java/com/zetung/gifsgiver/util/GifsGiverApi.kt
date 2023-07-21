@@ -8,5 +8,5 @@ interface GifsGiverApi {
     fun addToFavorite(id:String,url:String)
     fun deleteFromFavorite(id:String)
     suspend fun getAllFavorites():MutableList<GifModel>
-    suspend fun getAllLocalGifs():MutableList<GifModel>
+    //suspend fun getAllLocalGifs():MutableList<GifModel>
 }
