@@ -12,13 +12,15 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.last
 import javax.inject.Inject
 
-class GifsGiverImpl @Inject constructor (connectorApi: ConnectionApi, gifDbApi: GifDbApi) : GifsGiverApi {
+class GifsGiverImpl @Inject constructor (connectorApi: ConnectionApi,
+                                         gifDbApi: GifDbApi,
+                                         var gifsSingleton: GifsSingleton) : GifsGiverApi {
 
     private val connectorApi : ConnectionApi
     private val gifDbApi : GifDbApi
 
-    @Inject
-    lateinit var gifsSingleton: GifsSingleton
+//    @Inject
+//    lateinit var gifsSingleton: GifsSingleton
 
     init {
         this.gifDbApi = gifDbApi
@@ -52,7 +54,7 @@ class GifsGiverImpl @Inject constructor (connectorApi: ConnectionApi, gifDbApi: 
                 tempGifs.add(GifModel(record.id,record.images.gif.url,false))
 
         gifsSingleton.allGifs = tempGifs
-        //emit(allGifs)
+        emit(gifsSingleton.allGifs)
     }
 
 
@@ -68,9 +70,9 @@ class GifsGiverImpl @Inject constructor (connectorApi: ConnectionApi, gifDbApi: 
         gifDbApi.deleteFromFavorite(id)
     }
 
-    override suspend fun getAllFavorites(): MutableList<GifModel> {
-        return gifDbApi.getAllFavorites()
-    }
+//    override suspend fun getAllFavorites(): MutableList<GifModel> {
+//        return gifDbApi.getAllFavorites()
+//    }
 
 //    override suspend fun getAllLocalGifs():MutableList<GifModel>{
 //        val deferredDatabase = CoroutineScope(Dispatchers.Main).async { fetchDataFromDatabase() }

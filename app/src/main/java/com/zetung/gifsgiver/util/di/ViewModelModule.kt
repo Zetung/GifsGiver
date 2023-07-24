@@ -19,8 +19,10 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 object ViewModelModule {
 
     @Provides
-    fun provideGifsGiverApi (connectionApi: ConnectionApi, gifDbApi: GifDbApi):GifsGiverApi{
-        return GifsGiverImpl(connectionApi, gifDbApi)
+    fun provideGifsGiverApi (connectionApi: ConnectionApi,
+                             gifDbApi: GifDbApi,
+                             gifsSingleton: GifsSingleton):GifsGiverApi{
+        return GifsGiverImpl(connectionApi, gifDbApi, gifsSingleton)
     }
 
     @Provides

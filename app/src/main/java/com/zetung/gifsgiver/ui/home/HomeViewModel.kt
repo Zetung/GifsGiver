@@ -15,10 +15,11 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor (private val gifsGiverApi: GifsGiverApi): ViewModel() {
+class HomeViewModel @Inject constructor (private val gifsGiverApi: GifsGiverApi,
+                                         private val gifsSingleton: GifsSingleton): ViewModel() {
 
-    @Inject
-    lateinit var gifsSingleton: GifsSingleton
+//    @Inject
+//    lateinit var gifsSingleton: GifsSingleton
     var loadState = MutableLiveData<LoadState>().apply {
         value = LoadState.NotStarted()
     }
@@ -41,11 +42,13 @@ class HomeViewModel @Inject constructor (private val gifsGiverApi: GifsGiverApi)
 
     fun setLike(gifModel: GifModel){
         gifsGiverApi.addToFavorite(gifModel.id,gifModel.url)
-        gifsSingleton.allGifs.add(gifModel)
+        gifsSingleton.allGifs[gifsSingleton.allGifs.indexOf(gifModel)].like = true
+        gifs.value = gifsSingleton.allGifs
     }
 
     fun deleteLike(gifModel: GifModel){
         gifsGiverApi.deleteFromFavorite(gifModel.id)
-        gifsSingleton.allGifs.remove(gifModel)
+        gifsSingleton.allGifs[gifsSingleton.allGifs.indexOf(gifModel)].like = false
+        gifs.value = gifsSingleton.allGifs
     }
 }

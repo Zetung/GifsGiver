@@ -61,10 +61,10 @@ class HomeFragment : Fragment(), OnLikeClickListener {
     override fun onLikeClick(position: Int, data: GifModel) {
         if(data.like) {
             homeViewModel.deleteLike(data)
-            adapter.gifs.remove(data)
+            //adapter.gifs.remove(data)
         } else {
             homeViewModel.setLike(data)
-            adapter.gifs.add(data)
+            //adapter.gifs.add(data)
         }
     }
 
