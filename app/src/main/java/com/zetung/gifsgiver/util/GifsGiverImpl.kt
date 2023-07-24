@@ -12,20 +12,10 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.last
 import javax.inject.Inject
 
-class GifsGiverImpl @Inject constructor (connectorApi: ConnectionApi,
-                                         gifDbApi: GifDbApi,
-                                         var gifsSingleton: GifsSingleton) : GifsGiverApi {
-
-    private val connectorApi : ConnectionApi
-    private val gifDbApi : GifDbApi
-
-//    @Inject
-//    lateinit var gifsSingleton: GifsSingleton
-
-    init {
-        this.gifDbApi = gifDbApi
-        this.connectorApi = connectorApi
-    }
+class GifsGiverImpl @Inject constructor (
+    private val connectorApi: ConnectionApi,
+    private val gifDbApi: GifDbApi,
+    var gifsSingleton: GifsSingleton) : GifsGiverApi {
 
     private fun fetchDataFromInternet():
             Flow<MutableList<DataObject>> = flow {
@@ -74,16 +64,4 @@ class GifsGiverImpl @Inject constructor (connectorApi: ConnectionApi,
     override fun deleteFromFavorite(id: String) {
         gifDbApi.deleteFromFavorite(id)
     }
-
-//    override suspend fun getAllFavorites(): MutableList<GifModel> {
-//        return gifDbApi.getAllFavorites()
-//    }
-
-//    override suspend fun getAllLocalGifs():MutableList<GifModel>{
-//        val deferredDatabase = CoroutineScope(Dispatchers.Main).async { fetchDataFromDatabase() }
-//        val fromDatabase = deferredDatabase.await()
-//        for(record in allGifs)
-//            allGifs[allGifs.indexOf(record)].like = record.id in fromDatabase.last()
-//        return allGifs
-//    }
 }

@@ -1,9 +1,7 @@
 package com.zetung.gifsgiver.ui.home
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.zetung.gifsgiver.repository.model.AllGifs
 import com.zetung.gifsgiver.repository.model.GifModel
 import com.zetung.gifsgiver.util.GifsGiverApi
 import com.zetung.gifsgiver.util.LoadState
@@ -19,8 +17,6 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor (private val gifsGiverApi: GifsGiverApi,
                                          private val gifsSingleton: GifsSingleton): ViewModel() {
 
-//    @Inject
-//    lateinit var gifsSingleton: GifsSingleton
     var loadState = MutableLiveData<LoadState>().apply {
         value = LoadState.NotStarted()
     }
@@ -53,8 +49,7 @@ class HomeViewModel @Inject constructor (private val gifsGiverApi: GifsGiverApi,
         gifsGiverApi.deleteFromFavorite(gifModel.id)
         if (gifModel in gifsSingleton.allGifs)
             gifsSingleton.allGifs[gifsSingleton.allGifs.indexOf(gifModel)].like = false
-        val check = gifsSingleton.favoritesGifs.remove(gifModel)
-        Log.d("zet",check.toString())
+        gifsSingleton.favoritesGifs.remove(gifModel)
         gifs.value = gifsSingleton.allGifs
     }
 }
