@@ -17,13 +17,11 @@ class FavoritesViewModel @Inject constructor (private val gifsGiverApi: GifsGive
 
 
     var favorites = MutableLiveData<MutableList<GifModel>>().apply {
-        loadFavorites()
+        value = gifsSingleton.favoritesGifs
     }
 
     fun loadFavorites(){
-        CoroutineScope(Dispatchers.Main).launch{
-            favorites.value = gifsSingleton.favoritesGifs
-        }
+        favorites.value = gifsSingleton.favoritesGifs
     }
 
     fun deleteLike(gifModel: GifModel){

@@ -12,4 +12,13 @@ data class GifModel(
     val url: String,
     @ColumnInfo(name = "like")
     var like: Boolean
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is GifModel) return false
+        return id == other.id
+    }
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
+}

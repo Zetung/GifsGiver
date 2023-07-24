@@ -1,5 +1,6 @@
 package com.zetung.gifsgiver.ui.home
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.zetung.gifsgiver.repository.model.AllGifs
@@ -52,7 +53,8 @@ class HomeViewModel @Inject constructor (private val gifsGiverApi: GifsGiverApi,
         gifsGiverApi.deleteFromFavorite(gifModel.id)
         if (gifModel in gifsSingleton.allGifs)
             gifsSingleton.allGifs[gifsSingleton.allGifs.indexOf(gifModel)].like = false
-        gifsSingleton.favoritesGifs.remove(gifModel)
+        val check = gifsSingleton.favoritesGifs.remove(gifModel)
+        Log.d("zet",check.toString())
         gifs.value = gifsSingleton.allGifs
     }
 }
