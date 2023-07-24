@@ -42,13 +42,17 @@ class HomeViewModel @Inject constructor (private val gifsGiverApi: GifsGiverApi,
 
     fun setLike(gifModel: GifModel){
         gifsGiverApi.addToFavorite(gifModel.id,gifModel.url)
-        gifsSingleton.allGifs[gifsSingleton.allGifs.indexOf(gifModel)].like = true
+        if (gifModel in gifsSingleton.allGifs)
+            gifsSingleton.allGifs[gifsSingleton.allGifs.indexOf(gifModel)].like = true
+        gifsSingleton.favoritesGifs.add(gifModel)
         gifs.value = gifsSingleton.allGifs
     }
 
     fun deleteLike(gifModel: GifModel){
         gifsGiverApi.deleteFromFavorite(gifModel.id)
-        gifsSingleton.allGifs[gifsSingleton.allGifs.indexOf(gifModel)].like = false
+        if (gifModel in gifsSingleton.allGifs)
+            gifsSingleton.allGifs[gifsSingleton.allGifs.indexOf(gifModel)].like = false
+        gifsSingleton.favoritesGifs.remove(gifModel)
         gifs.value = gifsSingleton.allGifs
     }
 }

@@ -33,8 +33,9 @@ class GifsGiverImpl @Inject constructor (connectorApi: ConnectionApi,
         emit(internetGifs)
     }
 
-    private fun fetchDataFromDatabase(): Flow<List<String>> = flow {
-        val localGifs = gifDbApi.getAllFavoritesID()
+    private fun fetchDataFromDatabase(): Flow<List<GifModel>> = flow {
+        val localGifs = gifDbApi.getAllFavorites()
+        gifsSingleton.favoritesGifs = localGifs
         emit(localGifs)
     }
 
@@ -47,8 +48,12 @@ class GifsGiverImpl @Inject constructor (connectorApi: ConnectionApi,
         val fromDatabase = deferredDatabase.await()
 
         val tempGifs = mutableListOf<GifModel>()
+        val tempFavoritesID = mutableListOf<String>()
+        for (recordLocal in fromDatabase.last())
+            tempFavoritesID.add(recordLocal.id)
+
         for(record in fromInternet.last())
-            if(record.id in fromDatabase.last())
+            if(record.id in tempFavoritesID)
                 tempGifs.add(GifModel(record.id,record.images.gif.url,true))
             else
                 tempGifs.add(GifModel(record.id,record.images.gif.url,false))

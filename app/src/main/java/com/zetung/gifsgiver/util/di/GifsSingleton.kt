@@ -8,13 +8,14 @@ import javax.inject.Singleton
 @Singleton
 class GifsSingleton @Inject constructor(){
     var allGifs = mutableListOf<GifModel>()
-    fun getFavorites():MutableList<GifModel>{
-        val favList = mutableListOf<GifModel>()
-        for (record in allGifs)
-            if(record.like)
-                favList.add(record)
-        return favList
-    }
+    var favoritesGifs = mutableListOf<GifModel>()
+//    fun getFavorites():MutableList<GifModel>{
+//        val favList = mutableListOf<GifModel>()
+//        for (record in allGifs)
+//            if(record.like)
+//                favList.add(record)
+//        return favList
+//    }
 }
 
 //
