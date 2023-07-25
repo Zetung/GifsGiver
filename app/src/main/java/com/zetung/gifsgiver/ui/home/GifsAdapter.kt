@@ -8,24 +8,24 @@ import com.zetung.gifsgiver.repository.model.GifModel
 import com.zetung.gifsgiver.ui.OnLikeClickListener
 
 
-class GifsAdapter(var gifs: MutableList<GifModel>) : RecyclerView.Adapter<GifsHolder.GifsHolder>(){
+class GifsAdapter(var gifs: MutableList<GifModel>) : RecyclerView.Adapter<GifsHolder>(){
 
     private lateinit var likeClickListener: OnLikeClickListener
     fun setOnButtonClickListener(listener: OnLikeClickListener) {
         likeClickListener = listener
     }
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GifsHolder.GifsHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GifsHolder {
         val itemView =
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.gif_item, parent, false)
-        return GifsHolder.GifsHolder(itemView)
+        return GifsHolder(itemView)
     }
 
     override fun getItemCount(): Int {
         return gifs.size
     }
 
-    override fun onBindViewHolder(gifHolder: GifsHolder.GifsHolder, position: Int) {
+    override fun onBindViewHolder(gifHolder: GifsHolder, position: Int) {
         if(gifHolder.adapterPosition != RecyclerView.NO_POSITION){
             val data = gifs[gifHolder.adapterPosition]
             gifHolder.bind(data,likeClickListener)
