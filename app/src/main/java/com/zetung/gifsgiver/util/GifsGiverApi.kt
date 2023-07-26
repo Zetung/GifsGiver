@@ -7,4 +7,5 @@ interface GifsGiverApi {
     fun loadGifs(): Flow<MutableList<GifModel>>
     fun addToFavorite(id:String,url:String)
     fun deleteFromFavorite(id:String)
+    fun getState(): LoadState
 }

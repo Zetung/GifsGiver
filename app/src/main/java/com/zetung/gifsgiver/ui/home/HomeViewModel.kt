@@ -17,9 +17,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor (private val gifsGiverApi: GifsGiverApi,
                                          private val gifsSingleton: GifsSingleton): ViewModel() {
 
-    var loadState = MutableLiveData<LoadState>().apply {
-        value = LoadState.NotStarted()
-    }
+    var loadState = MutableLiveData<LoadState>()
 
     var gifs = MutableLiveData<MutableList<GifModel>>().apply {
         loadGif()
@@ -27,9 +25,9 @@ class HomeViewModel @Inject constructor (private val gifsGiverApi: GifsGiverApi,
 
     fun loadGif(){
         CoroutineScope(Dispatchers.Main).launch {
-            loadState.value = LoadState.Loading()
+            loadState.value = gifsGiverApi.getState()
             gifs.value = gifsGiverApi.loadGifs().last()
-            loadState.value = LoadState.Done()
+            loadState.value = gifsGiverApi.getState()
         }
     }
 

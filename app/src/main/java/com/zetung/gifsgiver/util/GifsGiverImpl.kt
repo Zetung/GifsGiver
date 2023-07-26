@@ -17,9 +17,12 @@ class GifsGiverImpl @Inject constructor (
     private val gifDbApi: GifDbApi,
     var gifsSingleton: GifsSingleton) : GifsGiverApi {
 
+    var loadState: LoadState = LoadState.NotStarted()
+
     private fun fetchDataFromInternet():
             Flow<MutableList<DataObject>> = flow {
         val internetGifs = connectorApi.loadGif()
+        loadState = connectorApi.getState()
         emit(internetGifs)
     }
 
@@ -31,6 +34,8 @@ class GifsGiverImpl @Inject constructor (
 
     private fun fetchDataCombined():
             Flow<MutableList<GifModel>> = flow {
+
+        loadState = LoadState.Loading()
         val deferredInternet = CoroutineScope(Dispatchers.Main).async { fetchDataFromInternet() }
         val deferredDatabase = CoroutineScope(Dispatchers.Main).async { fetchDataFromDatabase() }
 
@@ -42,11 +47,12 @@ class GifsGiverImpl @Inject constructor (
         for (recordLocal in fromDatabase.last())
             tempFavoritesID.add(recordLocal.id)
 
-        for(record in fromInternet.last())
-            if(record.id in tempFavoritesID)
-                tempGifs.add(GifModel(record.id,record.images.gif.url,true))
-            else
-                tempGifs.add(GifModel(record.id,record.images.gif.url,false))
+        if (loadState !is LoadState.Error)
+            for(record in fromInternet.last())
+                if(record.id in tempFavoritesID)
+                    tempGifs.add(GifModel(record.id,record.images.gif.url,true))
+                else
+                    tempGifs.add(GifModel(record.id,record.images.gif.url,false))
 
         gifsSingleton.allGifs = tempGifs
         emit(gifsSingleton.allGifs)
@@ -54,6 +60,7 @@ class GifsGiverImpl @Inject constructor (
 
 
     override fun loadGifs(): Flow<MutableList<GifModel>> {
+        loadState = LoadState.NotStarted()
         return fetchDataCombined()
     }
 
@@ -63,5 +70,9 @@ class GifsGiverImpl @Inject constructor (
 
     override fun deleteFromFavorite(id: String) {
         gifDbApi.deleteFromFavorite(id)
+    }
+
+    override fun getState(): LoadState {
+        return loadState
     }
 }

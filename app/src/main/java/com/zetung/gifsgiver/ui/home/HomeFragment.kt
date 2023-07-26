@@ -2,6 +2,7 @@ package com.zetung.gifsgiver.ui.home
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,6 +43,10 @@ class HomeFragment : Fragment(), OnLikeClickListener {
             if (state is LoadState.Done){
                 homeViewModel.loadState.value = LoadState.NotStarted()
                 stopProgressBarAnimation()
+            }
+            if (state is LoadState.Error){
+                binding.stateMsg.text = state.msg
+                Log.d("AAA",state.msg)
             }
         }
         homeViewModel.loadState.observe(viewLifecycleOwner, loadObserver)
