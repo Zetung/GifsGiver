@@ -42,11 +42,12 @@ class HomeFragment : Fragment(), OnLikeClickListener {
         val loadObserver = Observer<LoadState> { state->
             if (state is LoadState.Done){
                 homeViewModel.loadState.value = LoadState.NotStarted()
+                binding.stateMsg.visibility = View.GONE
                 stopProgressBarAnimation()
             }
             if (state is LoadState.Error){
+                binding.stateMsg.visibility = View.VISIBLE
                 binding.stateMsg.text = state.msg
-                Log.d("AAA",state.msg)
             }
         }
         homeViewModel.loadState.observe(viewLifecycleOwner, loadObserver)
