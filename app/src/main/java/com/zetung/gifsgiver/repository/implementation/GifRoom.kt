@@ -27,7 +27,7 @@ class GifRoom @Inject constructor (private val context:Context): GifDbApi {
         return LocalDb.getDb(context).getFavoritesDAO().getFavorites()
     }
 
-    override suspend fun getAllFavoritesID(): MutableList<String> {
-        return LocalDb.getDb(context).getFavoritesDAO().getAllID()
-    }
+//    override suspend fun getAllFavoritesID(): MutableList<String> {
+//        return LocalDb.getDb(context).getFavoritesDAO().getAllID()
+//    }
 }

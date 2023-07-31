@@ -7,5 +7,5 @@ interface GifDbApi {
     fun addToFavorite(id:String,url:String)
     fun deleteFromFavorite(id:String)
     suspend fun getAllFavorites():MutableList<GifModel>
-    suspend fun getAllFavoritesID():MutableList<String>
+    //suspend fun getAllFavoritesID():MutableList<String>
 }

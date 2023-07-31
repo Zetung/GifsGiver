@@ -34,12 +34,12 @@ class GifShared @Inject constructor (context: Context) : GifDbApi {
         return favorites
     }
 
-    override suspend fun getAllFavoritesID(): MutableList<String> {
-        val localStorage = sharedPreferences.all as MutableMap<String,String>
-        val favorites = mutableListOf<String>()
-        for (record in localStorage){
-            favorites.add(record.key)
-        }
-        return favorites
-    }
+//    override suspend fun getAllFavoritesID(): MutableList<String> {
+//        val localStorage = sharedPreferences.all as MutableMap<String,String>
+//        val favorites = mutableListOf<String>()
+//        for (record in localStorage){
+//            favorites.add(record.key)
+//        }
+//        return favorites
+//    }
 }

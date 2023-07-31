@@ -13,6 +13,6 @@ interface GifDAO {
     suspend fun getFavorites(): MutableList<GifModel>
     @Query("DELETE FROM gifs WHERE id=:id")
     suspend fun deleteFromFavorites(id: String)
-    @Query("SELECT id FROM gifs")
-    suspend fun getAllID(): MutableList<String>
+//    @Query("SELECT id FROM gifs")
+//    suspend fun getAllID(): MutableList<String>
 }
