@@ -10,28 +10,63 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.`when`
 
 @RunWith(AndroidJUnit4::class)
 class RetrofitConnectTest{
 
     private lateinit var context: Context
 
-    @Mock private lateinit var connectorChecker: ConnectorChecker
+    @Mock private lateinit var connectorChecker: ConnectorCheckerApi
 
     private lateinit var retrofitConnect: RetrofitConnect
 
     @Before
     fun setUp(){
         context = ApplicationProvider.getApplicationContext()
-        connectorChecker = ConnectorChecker(context)
+        connectorChecker = ConnectorCheckerImpl(context)
         retrofitConnect = RetrofitConnect(connectorChecker)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `load gifs from internet`() = runTest{
+    fun `load gifs with internet`() = runTest{
         val result = retrofitConnect.loadGif()
         assertTrue(result.isNotEmpty())
+        assertTrue(result.size != 0)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `take state on load gifs with internet`() = runTest{
+        assertTrue(retrofitConnect.getState() is LoadState.NotStarted)
+        retrofitConnect.loadGif()
+        assertTrue(retrofitConnect.getState() is LoadState.Done)
+    }
+
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `load gifs without internet`() = runTest{
+        val connectorCheckerMock = mock(ConnectorCheckerApi::class.java)
+        `when`(connectorCheckerMock.isNetworkAvailable()).thenReturn(false)
+
+        retrofitConnect = RetrofitConnect(connectorCheckerMock)
+        val result = retrofitConnect.loadGif()
+        assertTrue(result.size == 0)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `take state on load gifs without internet`() = runTest{
+        val connectorCheckerMock = mock(ConnectorCheckerApi::class.java)
+        `when`(connectorCheckerMock.isNetworkAvailable()).thenReturn(false)
+
+        retrofitConnect = RetrofitConnect(connectorCheckerMock)
+        assertTrue(retrofitConnect.getState() is LoadState.NotStarted)
+        retrofitConnect.loadGif()
+        assertTrue(retrofitConnect.getState() is LoadState.Error)
     }
 
 }

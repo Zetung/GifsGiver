@@ -4,6 +4,8 @@ import android.content.Context
 import com.zetung.gifsgiver.repository.GifDbApi
 import com.zetung.gifsgiver.repository.implementation.GifRoom
 import com.zetung.gifsgiver.util.ConnectionApi
+import com.zetung.gifsgiver.util.ConnectorCheckerApi
+import com.zetung.gifsgiver.util.ConnectorCheckerImpl
 import com.zetung.gifsgiver.util.GifsGiverApi
 import com.zetung.gifsgiver.util.GifsGiverImpl
 import com.zetung.gifsgiver.util.RetrofitConnect
@@ -38,6 +40,11 @@ object ViewModelModule {
     @Provides
     fun provideConnectorImpl (retrofitConnect: RetrofitConnect): ConnectionApi{
         return retrofitConnect
+    }
+
+    @Provides
+    fun provideConnectorCheckerImpl(connectorCheckerApi: ConnectorCheckerImpl): ConnectorCheckerApi{
+        return connectorCheckerApi
     }
 
 }

@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Inject
 
 class RetrofitConnect @Inject constructor(
-    private val connectorChecker: ConnectorChecker
+    private val connectorCheckerApi: ConnectorCheckerApi
 ) : ConnectionApi {
     private val BASE_URL = "https://api.giphy.com/v1/"
 //    private var gifApi: GifApi
@@ -15,7 +15,7 @@ class RetrofitConnect @Inject constructor(
 
     override suspend fun loadGif(): MutableList<DataObject> {
         loadState = LoadState.Loading()
-        return if (connectorChecker.isNetworkAvailable()){
+        return if (connectorCheckerApi.isNetworkAvailable()){
             val client = OkHttpClient.Builder()
                 .addInterceptor(LoggingInterceptor())
                 .build()
