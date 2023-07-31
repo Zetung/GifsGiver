@@ -15,9 +15,9 @@ import javax.inject.Inject
 class GifsGiverImpl @Inject constructor (
     private val connectorApi: ConnectionApi,
     private val gifDbApi: GifDbApi,
-    var gifsSingleton: GifsSingleton) : GifsGiverApi {
+    private var gifsSingleton: GifsSingleton) : GifsGiverApi {
 
-    var loadState: LoadState = LoadState.NotStarted()
+    private var loadState: LoadState = LoadState.NotStarted()
 
     private fun fetchDataFromInternet():
             Flow<MutableList<DataObject>> = flow {
