@@ -9,7 +9,9 @@ import com.zetung.gifsgiver.repository.model.Gif
 import com.zetung.gifsgiver.repository.model.GifModel
 import com.zetung.gifsgiver.util.di.GifsSingleton
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
@@ -69,7 +71,7 @@ class GifsGiverImplTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `load gifs on start or refresh home screen`() = runTest{
+    fun `load gifs with internet and db`() = runTest{
 
         val connectionApiMock = Mockito.mock(ConnectionApi::class.java)
         Mockito.`when`(connectionApiMock.loadGif()).thenReturn(internetList)
@@ -80,8 +82,28 @@ class GifsGiverImplTest {
         gifsGiverImpl = GifsGiverImpl(connectionApiMock,gifDbApiMock,gifsSingleton)
 
         val result = gifsGiverImpl.loadGifs().last()
-        advanceUntilIdle()
         assertTrue(result.containsAll(resultList))
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `check state on load gifs with internet and db`() = runTest{
+        val connectionApiMock = Mockito.mock(ConnectionApi::class.java)
+        Mockito.`when`(connectionApiMock.loadGif()).thenReturn(internetList)
+        Mockito.`when`(connectionApiMock.getState()).thenReturn(LoadState.Done())
+
+        val gifDbApiMock = Mockito.mock(GifDbApi::class.java)
+        Mockito.`when`(gifDbApiMock.getAllFavorites()).thenReturn(dbList)
+
+        gifsGiverImpl = GifsGiverImpl(connectionApiMock,gifDbApiMock,gifsSingleton)
+        var state = gifsGiverImpl.getState()
+        assertTrue(state is LoadState.NotStarted)
+
+        val result = gifsGiverImpl.loadGifs()
+        result.collect{
+            state = gifsGiverImpl.getState()
+            assertTrue(state is LoadState.Done)
+        }
     }
 
 }

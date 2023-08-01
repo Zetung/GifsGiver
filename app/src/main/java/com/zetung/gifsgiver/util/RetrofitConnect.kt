@@ -10,7 +10,6 @@ class RetrofitConnect @Inject constructor(
     private val connectorCheckerApi: ConnectorCheckerApi
 ) : ConnectionApi {
     private val BASE_URL = "https://api.giphy.com/v1/"
-//    private var gifApi: GifApi
     private var loadState: LoadState = LoadState.NotStarted()
 
     override suspend fun loadGif(): MutableList<DataObject> {
