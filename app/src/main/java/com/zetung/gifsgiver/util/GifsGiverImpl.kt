@@ -36,8 +36,8 @@ class GifsGiverImpl @Inject constructor (
             Flow<MutableList<GifModel>> = flow {
 
         loadState = LoadState.Loading()
-        val deferredInternet = CoroutineScope(Dispatchers.Main).async { fetchDataFromInternet() }
-        val deferredDatabase = CoroutineScope(Dispatchers.Main).async { fetchDataFromDatabase() }
+        val deferredInternet = CoroutineScope(Dispatchers.IO).async { fetchDataFromInternet() }
+        val deferredDatabase = CoroutineScope(Dispatchers.IO).async { fetchDataFromDatabase() }
 
         val fromInternet = deferredInternet.await()
         val fromDatabase = deferredDatabase.await()

@@ -1,14 +1,11 @@
-package com.zetung.gifsgiver.repository.implementation
+package com.zetung.gifsgiver.repository
 
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.zetung.gifsgiver.repository.GifDAO
-import com.zetung.gifsgiver.repository.LocalDb
 import com.zetung.gifsgiver.repository.model.GifModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
@@ -34,9 +31,8 @@ class GifDAOTest{
 
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `insert to database`() = runTest {
+    fun insertToDatabase() = runBlocking {
         val gifModel = GifModel("testID1234",
             "https://media1.giphy.com/media/gqoaqRxpeo2KAQc3JX/giphy.gif?cid=a4fb3c12wcffg4ot8yrpry9ll9fprkeadj4ghusy2nxm5j9a&ep=v1_gifs_trending&rid=giphy.gif&ct=g",
             true)
