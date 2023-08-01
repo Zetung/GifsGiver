@@ -14,22 +14,27 @@ import javax.inject.Inject
 class GifRoom @Inject constructor (private val context:Context): GifDbApi {
 
     private var loadState : LoadState = LoadState.NotStarted()
-    override fun addToFavorite(id: String, url: String) {
-        CoroutineScope(Dispatchers.IO).launch {
+    override suspend fun addToFavorite(id: String, url: String) {
+        loadState = try {
             LocalDb.getDb(context).getFavoritesDAO().addToFavorite(GifModel(id,url,true))
+            LoadState.Done()
+        } catch (e : SQLException){
+            LoadState.Error(e.toString())
         }
-
     }
 
-    override fun deleteFromFavorite(id: String) {
-        CoroutineScope(Dispatchers.IO).launch {
+    override suspend fun deleteFromFavorite(id: String) {
+        loadState = try {
             LocalDb.getDb(context).getFavoritesDAO().deleteFromFavorites(id)
+            LoadState.Done()
+        } catch (e : SQLException){
+            LoadState.Error(e.toString())
         }
     }
 
     override suspend fun getAllFavorites(): MutableList<GifModel> {
         return try {
-            loadState = LoadState.Done()
+            loadState = LoadState.Loading()
             LocalDb.getDb(context).getFavoritesDAO().getFavorites()
         } catch (e:SQLException){
             loadState = LoadState.Error(e.toString())

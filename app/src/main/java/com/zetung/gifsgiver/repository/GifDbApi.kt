@@ -5,8 +5,8 @@ import com.zetung.gifsgiver.util.LoadState
 
 
 interface GifDbApi {
-    fun addToFavorite(id:String,url:String)
-    fun deleteFromFavorite(id:String)
+    suspend fun addToFavorite(id:String,url:String)
+    suspend fun deleteFromFavorite(id:String)
     suspend fun getAllFavorites():MutableList<GifModel>
     fun getState():LoadState
 }

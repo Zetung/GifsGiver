@@ -14,13 +14,13 @@ class GifShared @Inject constructor (context: Context) : GifDbApi {
         sharedPreferences = context.getSharedPreferences("gifs",Context.MODE_PRIVATE)
     }
 
-    override fun addToFavorite(id: String, url: String) {
+    override suspend fun addToFavorite(id: String, url: String) {
         val editor = sharedPreferences.edit()
         editor.putString(id, url)
         editor.apply()
     }
 
-    override fun deleteFromFavorite(id: String) {
+    override suspend fun deleteFromFavorite(id: String) {
         val editor = sharedPreferences.edit()
         editor.remove(id)
         editor.apply()

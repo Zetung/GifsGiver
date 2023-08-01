@@ -148,4 +148,64 @@ class GifsGiverImplTest {
             assertTrue(state is LoadState.Error)
         }
     }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `check state on insert to favorites`() = runTest{
+        val connectionApiMock = Mockito.mock(ConnectionApi::class.java)
+
+        val gifDbApiMock = Mockito.mock(GifDbApi::class.java)
+        Mockito.`when`(gifDbApiMock.getState()).thenReturn(LoadState.Done())
+
+        gifsGiverImpl = GifsGiverImpl(connectionApiMock,gifDbApiMock,gifsSingleton)
+
+        gifsGiverImpl.addToFavorite("id","url")
+        val state = gifsGiverImpl.getState()
+        assertTrue(state is LoadState.Done)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `check state on error insert to favorites`() = runTest{
+        val connectionApiMock = Mockito.mock(ConnectionApi::class.java)
+
+        val gifDbApiMock = Mockito.mock(GifDbApi::class.java)
+        Mockito.`when`(gifDbApiMock.getState()).thenReturn(LoadState.Error())
+
+        gifsGiverImpl = GifsGiverImpl(connectionApiMock,gifDbApiMock,gifsSingleton)
+
+        gifsGiverImpl.addToFavorite("id","url")
+        val state = gifsGiverImpl.getState()
+        assertTrue(state is LoadState.Error)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `check state on delete from favorites`() = runTest{
+        val connectionApiMock = Mockito.mock(ConnectionApi::class.java)
+
+        val gifDbApiMock = Mockito.mock(GifDbApi::class.java)
+        Mockito.`when`(gifDbApiMock.getState()).thenReturn(LoadState.Done())
+
+        gifsGiverImpl = GifsGiverImpl(connectionApiMock,gifDbApiMock,gifsSingleton)
+
+        gifsGiverImpl.deleteFromFavorite("id")
+        val state = gifsGiverImpl.getState()
+        assertTrue(state is LoadState.Done)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `check state on error delete from favorites`() = runTest{
+        val connectionApiMock = Mockito.mock(ConnectionApi::class.java)
+
+        val gifDbApiMock = Mockito.mock(GifDbApi::class.java)
+        Mockito.`when`(gifDbApiMock.getState()).thenReturn(LoadState.Error())
+
+        gifsGiverImpl = GifsGiverImpl(connectionApiMock,gifDbApiMock,gifsSingleton)
+
+        gifsGiverImpl.deleteFromFavorite("id")
+        val state = gifsGiverImpl.getState()
+        assertTrue(state is LoadState.Error)
+    }
 }

@@ -36,18 +36,26 @@ class HomeViewModel @Inject constructor (private val gifsGiverApi: GifsGiverApi,
     }
 
     fun setLike(gifModel: GifModel){
-        gifsGiverApi.addToFavorite(gifModel.id,gifModel.url)
-        if (gifModel in gifsSingleton.allGifs)
-            gifsSingleton.allGifs[gifsSingleton.allGifs.indexOf(gifModel)].like = true
-        gifsSingleton.favoritesGifs.add(gifModel)
-        gifs.value = gifsSingleton.allGifs
+        CoroutineScope(Dispatchers.Main).launch {
+            gifsGiverApi.addToFavorite(gifModel.id,gifModel.url)
+            if (gifsGiverApi.getState() !is LoadState.Error) {
+                if (gifModel in gifsSingleton.allGifs)
+                    gifsSingleton.allGifs[gifsSingleton.allGifs.indexOf(gifModel)].like = true
+                gifsSingleton.favoritesGifs.add(gifModel)
+                gifs.value = gifsSingleton.allGifs
+            }
+        }
     }
 
     fun deleteLike(gifModel: GifModel){
-        gifsGiverApi.deleteFromFavorite(gifModel.id)
-        if (gifModel in gifsSingleton.allGifs)
-            gifsSingleton.allGifs[gifsSingleton.allGifs.indexOf(gifModel)].like = false
-        gifsSingleton.favoritesGifs.remove(gifModel)
-        gifs.value = gifsSingleton.allGifs
+        CoroutineScope(Dispatchers.Main).launch {
+            gifsGiverApi.deleteFromFavorite(gifModel.id)
+            if (gifsGiverApi.getState() !is LoadState.Error){
+                if (gifModel in gifsSingleton.allGifs)
+                    gifsSingleton.allGifs[gifsSingleton.allGifs.indexOf(gifModel)].like = false
+                gifsSingleton.favoritesGifs.remove(gifModel)
+                gifs.value = gifsSingleton.allGifs
+            }
+        }
     }
 }

@@ -69,12 +69,14 @@ class GifsGiverImpl @Inject constructor (
         return fetchDataCombined()
     }
 
-    override fun addToFavorite(id: String, url:String) {
+    override suspend fun addToFavorite(id: String, url:String) {
         gifDbApi.addToFavorite(id,url)
+        loadState = gifDbApi.getState()
     }
 
-    override fun deleteFromFavorite(id: String) {
+    override suspend fun deleteFromFavorite(id: String) {
         gifDbApi.deleteFromFavorite(id)
+        loadState = gifDbApi.getState()
     }
 
     override fun getState(): LoadState {
