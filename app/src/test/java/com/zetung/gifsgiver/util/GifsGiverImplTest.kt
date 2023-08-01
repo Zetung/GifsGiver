@@ -106,4 +106,24 @@ class GifsGiverImplTest {
         }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `check state on load gifs with no internet and db`() = runTest{
+        val connectionApiMock = Mockito.mock(ConnectionApi::class.java)
+        Mockito.`when`(connectionApiMock.loadGif()).thenReturn(mutableListOf())
+        Mockito.`when`(connectionApiMock.getState()).thenReturn(LoadState.Error())
+
+        val gifDbApiMock = Mockito.mock(GifDbApi::class.java)
+        Mockito.`when`(gifDbApiMock.getAllFavorites()).thenReturn(dbList)
+
+        gifsGiverImpl = GifsGiverImpl(connectionApiMock,gifDbApiMock,gifsSingleton)
+        var state = gifsGiverImpl.getState()
+        assertTrue(state is LoadState.NotStarted)
+
+        val result = gifsGiverImpl.loadGifs()
+        result.collect{
+            state = gifsGiverImpl.getState()
+            assertTrue(state is LoadState.Error)
+        }
+    }
 }

@@ -44,15 +44,17 @@ class GifsGiverImpl @Inject constructor (
 
         val tempGifs = mutableListOf<GifModel>()
         val tempFavoritesID = mutableListOf<String>()
-        for (recordLocal in fromDatabase.last())
-            tempFavoritesID.add(recordLocal.id)
 
-        if (loadState !is LoadState.Error)
+        if (loadState !is LoadState.Error){
+            for (recordLocal in fromDatabase.last())
+                tempFavoritesID.add(recordLocal.id)
+
             for(record in fromInternet.last())
                 if(record.id in tempFavoritesID)
                     tempGifs.add(GifModel(record.id,record.images.gif.url,true))
                 else
                     tempGifs.add(GifModel(record.id,record.images.gif.url,false))
+        }
 
         gifsSingleton.allGifs = tempGifs
         emit(gifsSingleton.allGifs)
