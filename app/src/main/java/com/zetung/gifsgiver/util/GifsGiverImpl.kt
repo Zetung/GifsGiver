@@ -22,12 +22,15 @@ class GifsGiverImpl @Inject constructor (
     private fun fetchDataFromInternet():
             Flow<MutableList<DataObject>> = flow {
         val internetGifs = connectorApi.loadGif()
-        loadState = connectorApi.getState()
+        if(loadState !is LoadState.Error)
+            loadState = connectorApi.getState()
         emit(internetGifs)
     }
 
     private fun fetchDataFromDatabase(): Flow<List<GifModel>> = flow {
         val localGifs = gifDbApi.getAllFavorites()
+        if(loadState !is LoadState.Error)
+            loadState = gifDbApi.getState()
         gifsSingleton.favoritesGifs = localGifs
         emit(localGifs)
     }

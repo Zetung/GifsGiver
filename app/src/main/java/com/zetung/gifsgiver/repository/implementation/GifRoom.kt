@@ -4,12 +4,16 @@ import android.content.Context
 import com.zetung.gifsgiver.repository.GifDbApi
 import com.zetung.gifsgiver.repository.LocalDb
 import com.zetung.gifsgiver.repository.model.GifModel
+import com.zetung.gifsgiver.util.LoadState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.sql.SQLException
 import javax.inject.Inject
 
 class GifRoom @Inject constructor (private val context:Context): GifDbApi {
+
+    private var loadState : LoadState = LoadState.NotStarted()
     override fun addToFavorite(id: String, url: String) {
         CoroutineScope(Dispatchers.IO).launch {
             LocalDb.getDb(context).getFavoritesDAO().addToFavorite(GifModel(id,url,true))
@@ -24,10 +28,16 @@ class GifRoom @Inject constructor (private val context:Context): GifDbApi {
     }
 
     override suspend fun getAllFavorites(): MutableList<GifModel> {
-        return LocalDb.getDb(context).getFavoritesDAO().getFavorites()
+        return try {
+            loadState = LoadState.Done()
+            LocalDb.getDb(context).getFavoritesDAO().getFavorites()
+        } catch (e:SQLException){
+            loadState = LoadState.Error(e.toString())
+            mutableListOf()
+        }
     }
 
-//    override suspend fun getAllFavoritesID(): MutableList<String> {
-//        return LocalDb.getDb(context).getFavoritesDAO().getAllID()
-//    }
+    override fun getState(): LoadState {
+        return loadState
+    }
 }
