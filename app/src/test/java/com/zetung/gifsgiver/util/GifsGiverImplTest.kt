@@ -1,6 +1,7 @@
 package com.zetung.gifsgiver.util
 
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.zetung.gifsgiver.repository.GifDbApi
 import com.zetung.gifsgiver.repository.implementation.GifRoom
 import com.zetung.gifsgiver.repository.model.DataGif
@@ -18,9 +19,12 @@ import org.junit.Assert.*
 import org.junit.Before
 
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
 
+@ExperimentalCoroutinesApi
+@RunWith(AndroidJUnit4::class)
 class GifsGiverImplTest {
 
     @Mock private lateinit var gifsSingleton: GifsSingleton
@@ -69,7 +73,7 @@ class GifsGiverImplTest {
         gifsSingleton = GifsSingleton()
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+
     @Test
     fun `load gifs with internet and db`() = runTest{
 
@@ -85,7 +89,7 @@ class GifsGiverImplTest {
         assertTrue(result.containsAll(resultList))
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+
     @Test
     fun `check state on load gifs with internet and db`() = runTest{
         val connectionApiMock = Mockito.mock(ConnectionApi::class.java)
@@ -106,7 +110,6 @@ class GifsGiverImplTest {
         }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `check state on load gifs with no internet and db`() = runTest{
         val connectionApiMock = Mockito.mock(ConnectionApi::class.java)
@@ -127,7 +130,7 @@ class GifsGiverImplTest {
         }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+
     @Test
     fun `check state on load gifs with internet and no db`() = runTest{
         val connectionApiMock = Mockito.mock(ConnectionApi::class.java)
@@ -149,7 +152,7 @@ class GifsGiverImplTest {
         }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+
     @Test
     fun `check state on insert to favorites`() = runTest{
         val connectionApiMock = Mockito.mock(ConnectionApi::class.java)
@@ -164,7 +167,7 @@ class GifsGiverImplTest {
         assertTrue(state is LoadState.Done)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+
     @Test
     fun `check state on error insert to favorites`() = runTest{
         val connectionApiMock = Mockito.mock(ConnectionApi::class.java)
@@ -179,7 +182,6 @@ class GifsGiverImplTest {
         assertTrue(state is LoadState.Error)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `check state on delete from favorites`() = runTest{
         val connectionApiMock = Mockito.mock(ConnectionApi::class.java)
@@ -194,7 +196,6 @@ class GifsGiverImplTest {
         assertTrue(state is LoadState.Done)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `check state on error delete from favorites`() = runTest{
         val connectionApiMock = Mockito.mock(ConnectionApi::class.java)

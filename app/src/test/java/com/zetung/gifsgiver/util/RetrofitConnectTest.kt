@@ -13,6 +13,7 @@ import org.mockito.Mock
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 
+@ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 class RetrofitConnectTest{
 
@@ -29,7 +30,7 @@ class RetrofitConnectTest{
         retrofitConnect = RetrofitConnect(connectorChecker)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+
     @Test
     fun `load gifs with internet`() = runTest{
         val result = retrofitConnect.loadGif()
@@ -37,7 +38,7 @@ class RetrofitConnectTest{
         assertTrue(result.size != 0)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+
     @Test
     fun `take state on load gifs with internet`() = runTest{
         assertTrue(retrofitConnect.getState() is LoadState.NotStarted)
@@ -46,7 +47,7 @@ class RetrofitConnectTest{
     }
 
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+
     @Test
     fun `load gifs without internet`() = runTest{
         val connectorCheckerMock = mock(ConnectorCheckerApi::class.java)
@@ -57,7 +58,7 @@ class RetrofitConnectTest{
         assertTrue(result.size == 0)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+
     @Test
     fun `take state on load gifs without internet`() = runTest{
         val connectorCheckerMock = mock(ConnectorCheckerApi::class.java)
