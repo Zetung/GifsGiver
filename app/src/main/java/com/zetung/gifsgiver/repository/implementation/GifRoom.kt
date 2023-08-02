@@ -5,9 +5,6 @@ import com.zetung.gifsgiver.repository.GifDbApi
 import com.zetung.gifsgiver.repository.LocalDb
 import com.zetung.gifsgiver.repository.model.GifModel
 import com.zetung.gifsgiver.util.LoadState
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.sql.SQLException
 import javax.inject.Inject
 
