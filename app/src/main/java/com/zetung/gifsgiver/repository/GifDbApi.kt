@@ -1,10 +1,12 @@
 package com.zetung.gifsgiver.repository
 
 import com.zetung.gifsgiver.repository.model.GifModel
+import com.zetung.gifsgiver.util.LoadState
+
 
 interface GifDbApi {
-    fun addToFavorite(id:String,url:String)
-    fun deleteFromFavorite(id:String)
+    suspend fun addToFavorite(id:String,url:String)
+    suspend fun deleteFromFavorite(id:String)
     suspend fun getAllFavorites():MutableList<GifModel>
-    suspend fun getAllFavoritesID():MutableList<String>
+    fun getState():LoadState
 }

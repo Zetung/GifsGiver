@@ -4,21 +4,23 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.zetung.gifsgiver.repository.GifDbApi
 import com.zetung.gifsgiver.repository.model.GifModel
+import com.zetung.gifsgiver.util.LoadState
+import javax.inject.Inject
 
-class GifShared(context: Context, nameShared: String) : GifDbApi {
+class GifShared @Inject constructor (context: Context) : GifDbApi {
     private val sharedPreferences : SharedPreferences
 
     init {
-        sharedPreferences = context.getSharedPreferences(nameShared,Context.MODE_PRIVATE)
+        sharedPreferences = context.getSharedPreferences("gifs",Context.MODE_PRIVATE)
     }
 
-    override fun addToFavorite(id: String, url: String) {
+    override suspend fun addToFavorite(id: String, url: String) {
         val editor = sharedPreferences.edit()
         editor.putString(id, url)
         editor.apply()
     }
 
-    override fun deleteFromFavorite(id: String) {
+    override suspend fun deleteFromFavorite(id: String) {
         val editor = sharedPreferences.edit()
         editor.remove(id)
         editor.apply()
@@ -33,12 +35,7 @@ class GifShared(context: Context, nameShared: String) : GifDbApi {
         return favorites
     }
 
-    override suspend fun getAllFavoritesID(): MutableList<String> {
-        val localStorage = sharedPreferences.all as MutableMap<String,String>
-        val favorites = mutableListOf<String>()
-        for (record in localStorage){
-            favorites.add(record.key)
-        }
-        return favorites
+    override fun getState(): LoadState {
+        TODO("Not yet implemented")
     }
 }

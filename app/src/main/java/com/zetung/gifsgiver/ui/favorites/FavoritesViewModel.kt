@@ -1,35 +1,40 @@
 package com.zetung.gifsgiver.ui.favorites
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.zetung.gifsgiver.repository.implementation.GifRoom
 import com.zetung.gifsgiver.repository.model.GifModel
 import com.zetung.gifsgiver.util.GifsGiverApi
-import com.zetung.gifsgiver.util.GifsGiverImpl
+import com.zetung.gifsgiver.util.LoadState
+import com.zetung.gifsgiver.util.di.GifsSingleton
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class FavoritesViewModel (private val gifsGiverApi: GifsGiverApi): ViewModel() {
+@HiltViewModel
+class FavoritesViewModel @Inject constructor (private val gifsGiverApi: GifsGiverApi,
+                                              private val gifsSingleton: GifsSingleton): ViewModel() {
 
 
     var favorites = MutableLiveData<MutableList<GifModel>>().apply {
-        CoroutineScope(Dispatchers.Main).launch{
-            value = gifsGiverApi.getAllFavorites()
-        }
+        value = gifsSingleton.favoritesGifs
     }
 
     fun loadFavorites(){
-        CoroutineScope(Dispatchers.Main).launch{
-            favorites.value = gifsGiverApi.getAllFavorites()
-        }
+        favorites.value = gifsSingleton.favoritesGifs
     }
 
-    fun deleteLike(data: GifModel){
-        favorites.value!!.remove(data)
-        gifsGiverApi.deleteFromFavorite(data.id)
+    fun deleteLike(gifModel: GifModel){
+        CoroutineScope(Dispatchers.Main).launch {
+            gifsGiverApi.deleteFromFavorite(gifModel.id)
+            if (gifsGiverApi.getState() !is LoadState.Error){
+                favorites.value!!.remove(gifModel)
+                if (gifModel in gifsSingleton.allGifs)
+                    gifsSingleton.allGifs[gifsSingleton.allGifs.indexOf(gifModel)].like = false
+                gifsSingleton.favoritesGifs.remove(gifModel)
+            }
+        }
     }
 
 }

@@ -1,25 +1,21 @@
 package com.zetung.gifsgiver.ui.home
 
 import android.annotation.SuppressLint
-import android.app.Application
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.zetung.gifsgiver.databinding.FragmentHomeBinding
-import com.zetung.gifsgiver.repository.implementation.GifRoom
-import com.zetung.gifsgiver.repository.model.DataObject
 import com.zetung.gifsgiver.repository.model.GifModel
 import com.zetung.gifsgiver.ui.OnLikeClickListener
-import com.zetung.gifsgiver.ui.favorites.FavoritesViewModel
-import com.zetung.gifsgiver.util.GifsGiverImpl
 import com.zetung.gifsgiver.util.LoadState
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeFragment : Fragment(), OnLikeClickListener {
 
     private var _binding: FragmentHomeBinding? = null
@@ -27,7 +23,7 @@ class HomeFragment : Fragment(), OnLikeClickListener {
 
     private lateinit var adapter: GifsAdapter
 
-    private lateinit var homeViewModel: HomeViewModel
+    private val homeViewModel: HomeViewModel by viewModels()
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(
@@ -36,10 +32,6 @@ class HomeFragment : Fragment(), OnLikeClickListener {
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        homeViewModel = ViewModelProvider(this,HomeFactory(
-            requireActivity().application,
-            GifsGiverImpl(GifRoom(requireContext()))
-        )).get(HomeViewModel::class.java)
         homeViewModel.getAllLocalGifs()
         val gifsObserver = Observer<MutableList<GifModel>> { gifsList ->
             adapter.gifs = gifsList.toMutableList()
@@ -49,7 +41,12 @@ class HomeFragment : Fragment(), OnLikeClickListener {
         val loadObserver = Observer<LoadState> { state->
             if (state is LoadState.Done){
                 homeViewModel.loadState.value = LoadState.NotStarted()
+                binding.stateMsg.visibility = View.GONE
                 stopProgressBarAnimation()
+            }
+            if (state is LoadState.Error){
+                binding.stateMsg.visibility = View.VISIBLE
+                binding.stateMsg.text = state.msg
             }
         }
         homeViewModel.loadState.observe(viewLifecycleOwner, loadObserver)
@@ -68,11 +65,9 @@ class HomeFragment : Fragment(), OnLikeClickListener {
 
     override fun onLikeClick(position: Int, data: GifModel) {
         if(data.like) {
-            homeViewModel.deleteLike(data.id)
-            adapter.gifs.remove(data)
+            homeViewModel.deleteLike(data)
         } else {
-            homeViewModel.setLike(data.id,data.url)
-            adapter.gifs.add(data)
+            homeViewModel.setLike(data)
         }
     }
 

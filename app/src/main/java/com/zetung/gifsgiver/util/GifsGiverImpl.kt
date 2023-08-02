@@ -3,82 +3,83 @@ package com.zetung.gifsgiver.util
 import com.zetung.gifsgiver.repository.GifDbApi
 import com.zetung.gifsgiver.repository.model.DataObject
 import com.zetung.gifsgiver.repository.model.GifModel
+import com.zetung.gifsgiver.util.di.GifsSingleton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.last
+import javax.inject.Inject
 
-class GifsGiverImpl(gifDbApi: GifDbApi) : GifsGiverApi {
+class GifsGiverImpl @Inject constructor (
+    private val connectorApi: ConnectionApi,
+    private val gifDbApi: GifDbApi,
+    private var gifsSingleton: GifsSingleton) : GifsGiverApi {
 
-    private val gifDbApi : GifDbApi
-    private var allGifs = mutableListOf<GifModel>()
+    private var loadState: LoadState = LoadState.NotStarted()
 
-    private var internetState: LoadState = LoadState.NotStarted()
-    private var localState: LoadState = LoadState.NotStarted()
-    var loadState: LoadState = LoadState.NotStarted()
-
-    init {
-        this.gifDbApi = gifDbApi
-    }
-
-    private fun fetchDataFromInternet(connectorApi: ConnectionApi):
+    private fun fetchDataFromInternet():
             Flow<MutableList<DataObject>> = flow {
-        internetState = LoadState.Loading()
         val internetGifs = connectorApi.loadGif()
-        internetState = LoadState.Done()
+        if(loadState !is LoadState.Error)
+            loadState = connectorApi.getState()
         emit(internetGifs)
     }
 
-    private fun fetchDataFromDatabase(): Flow<List<String>> = flow {
-        localState = LoadState.Loading()
-        val localGifs = gifDbApi.getAllFavoritesID()
-        localState = LoadState.Done()
+    private fun fetchDataFromDatabase(): Flow<List<GifModel>> = flow {
+        val localGifs = gifDbApi.getAllFavorites()
+        if(loadState !is LoadState.Error)
+            loadState = gifDbApi.getState()
+        gifsSingleton.favoritesGifs = localGifs
         emit(localGifs)
     }
 
-    private fun fetchDataCombined(connectorApi: ConnectionApi):
+    private fun fetchDataCombined():
             Flow<MutableList<GifModel>> = flow {
-        val deferredInternet = CoroutineScope(Dispatchers.Main).async { fetchDataFromInternet(connectorApi) }
-        val deferredDatabase = CoroutineScope(Dispatchers.Main).async { fetchDataFromDatabase() }
+
+        loadState = LoadState.Loading()
+        val deferredInternet = CoroutineScope(Dispatchers.IO).async { fetchDataFromInternet() }
+        val deferredDatabase = CoroutineScope(Dispatchers.IO).async { fetchDataFromDatabase() }
 
         val fromInternet = deferredInternet.await()
         val fromDatabase = deferredDatabase.await()
 
         val tempGifs = mutableListOf<GifModel>()
-        for(record in fromInternet.last())
-            if(record.id in fromDatabase.last())
-                tempGifs.add(GifModel(record.id,record.images.gif.url,true))
-            else
-                tempGifs.add(GifModel(record.id,record.images.gif.url,false))
+        val tempFavoritesID = mutableListOf<String>()
 
-        allGifs = tempGifs
-        emit(allGifs)
+        if (loadState !is LoadState.Error){
+            for (recordLocal in fromDatabase.last())
+                tempFavoritesID.add(recordLocal.id)
+
+            for(record in fromInternet.last())
+                if(record.id in tempFavoritesID)
+                    tempGifs.add(GifModel(record.id,record.images.gif.url,true))
+                else
+                    tempGifs.add(GifModel(record.id,record.images.gif.url,false))
+        }
+
+        gifsSingleton.allGifs = tempGifs
+        emit(gifsSingleton.allGifs)
     }
 
 
-    override fun loadGifs(connectorApi: ConnectionApi): Flow<MutableList<GifModel>> {
-        return fetchDataCombined(connectorApi)
+    override fun loadGifs(): Flow<MutableList<GifModel>> {
+        loadState = LoadState.NotStarted()
+        return fetchDataCombined()
     }
 
-    override fun addToFavorite(id: String, url:String) {
+    override suspend fun addToFavorite(id: String, url:String) {
         gifDbApi.addToFavorite(id,url)
+        loadState = gifDbApi.getState()
     }
 
-    override fun deleteFromFavorite(id: String) {
+    override suspend fun deleteFromFavorite(id: String) {
         gifDbApi.deleteFromFavorite(id)
+        loadState = gifDbApi.getState()
     }
 
-    override suspend fun getAllFavorites(): MutableList<GifModel> {
-        return gifDbApi.getAllFavorites()
-    }
-
-    override suspend fun getAllLocalGifs():MutableList<GifModel>{
-        val deferredDatabase = CoroutineScope(Dispatchers.Main).async { fetchDataFromDatabase() }
-        val fromDatabase = deferredDatabase.await()
-        for(record in allGifs)
-            allGifs[allGifs.indexOf(record)].like = record.id in fromDatabase.last()
-        return allGifs
+    override fun getState(): LoadState {
+        return loadState
     }
 }

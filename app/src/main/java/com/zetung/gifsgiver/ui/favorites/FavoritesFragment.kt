@@ -6,15 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.zetung.gifsgiver.databinding.FragmentFavoritesBinding
-import com.zetung.gifsgiver.repository.implementation.GifRoom
 import com.zetung.gifsgiver.repository.model.GifModel
 import com.zetung.gifsgiver.ui.OnLikeClickListener
-import com.zetung.gifsgiver.util.GifsGiverImpl
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class FavoritesFragment : Fragment(), OnLikeClickListener {
 
     private var _binding: FragmentFavoritesBinding? = null
@@ -22,7 +22,7 @@ class FavoritesFragment : Fragment(), OnLikeClickListener {
 
     private lateinit var adapter: FavoriteAdapter
 
-    private lateinit var favoritesViewModel: FavoritesViewModel
+    private val favoritesViewModel: FavoritesViewModel by viewModels()
 
 
     @SuppressLint("NotifyDataSetChanged")
@@ -32,10 +32,6 @@ class FavoritesFragment : Fragment(), OnLikeClickListener {
     ): View {
         _binding = FragmentFavoritesBinding.inflate(inflater, container, false)
 
-        favoritesViewModel = ViewModelProvider(this,FavoritesFactory(
-            requireActivity().application,
-            GifsGiverImpl(GifRoom(requireContext()))
-        )).get(FavoritesViewModel::class.java)
         favoritesViewModel.loadFavorites()
 
         val favoritesObserver = Observer<List<GifModel>> { favoritesList ->
